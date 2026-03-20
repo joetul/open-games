@@ -101,8 +101,13 @@
 
 /* Same number highlight */
 .cell.same-number {
-  background-color: var(--bg-secondary);
-  color: var(--accent-cyan);
+  background-color: rgba(139, 233, 253, 0.15);
+  color: var(--accent-purple);
+  font-weight: 800;
+}
+
+[data-theme="light"] .cell.same-number {
+  background-color: rgba(124, 77, 255, 0.12);
 }
 
 /* Error state */
