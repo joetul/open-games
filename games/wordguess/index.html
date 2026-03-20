@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Guess - Open Games</title>
+  <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/css/reset.css">
+  <link rel="stylesheet" href="../../shared/css/theme.css">
+  <link rel="stylesheet" href="../../shared/css/common.css">
+  <link rel="stylesheet" href="wordguess.css">
+  <script src="../../shared/js/theme-toggle.js" defer></script>
+</head>
+<body>
+  <div class="wg-page">
+    <header class="site-header container">
+      <a href="../../">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        <h1>Word Guess</h1>
+      </a>
+      <button class="theme-toggle" aria-label="Toggle theme"></button>
+    </header>
+
+    <main class="game-area">
+      <!-- Toast notifications -->
+      <div class="toast-container" id="toast-container"></div>
+
+      <!-- Game board -->
+      <div class="board-wrapper">
+        <div class="board" id="board">
+          <div class="row" data-row="0">
+            <div class="tile" data-col="0"></div>
+            <div class="tile" data-col="1"></div>
+            <div class="tile" data-col="2"></div>
+            <div class="tile" data-col="3"></div>
+            <div class="tile" data-col="4"></div>
+          </div>
+          <div class="row" data-row="1">
+            <div class="tile" data-col="0"></div>
+            <div class="tile" data-col="1"></div>
+            <div class="tile" data-col="2"></div>
+            <div class="tile" data-col="3"></div>
+            <div class="tile" data-col="4"></div>
+          </div>
+          <div class="row" data-row="2">
+            <div class="tile" data-col="0"></div>
+            <div class="tile" data-col="1"></div>
+            <div class="tile" data-col="2"></div>
+            <div class="tile" data-col="3"></div>
+            <div class="tile" data-col="4"></div>
+          </div>
+          <div class="row" data-row="3">
+            <div class="tile" data-col="0"></div>
+            <div class="tile" data-col="1"></div>
+            <div class="tile" data-col="2"></div>
+            <div class="tile" data-col="3"></div>
+            <div class="tile" data-col="4"></div>
+          </div>
+          <div class="row" data-row="4">
+            <div class="tile" data-col="0"></div>
+            <div class="tile" data-col="1"></div>
+            <div class="tile" data-col="2"></div>
+            <div class="tile" data-col="3"></div>
+            <div class="tile" data-col="4"></div>
+          </div>
+          <div class="row" data-row="5">
+            <div class="tile" data-col="0"></div>
+            <div class="tile" data-col="1"></div>
+            <div class="tile" data-col="2"></div>
+            <div class="tile" data-col="3"></div>
+            <div class="tile" data-col="4"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- On-screen keyboard -->
+      <div class="keyboard" id="keyboard">
+        <div class="keyboard-row">
+          <button class="key" data-key="q">Q</button>
+          <button class="key" data-key="w">W</button>
+          <button class="key" data-key="e">E</button>
+          <button class="key" data-key="r">R</button>
+          <button class="key" data-key="t">T</button>
+          <button class="key" data-key="y">Y</button>
+          <button class="key" data-key="u">U</button>
+          <button class="key" data-key="i">I</button>
+          <button class="key" data-key="o">O</button>
+          <button class="key" data-key="p">P</button>
+        </div>
+        <div class="keyboard-row">
+          <div class="spacer-half"></div>
+          <button class="key" data-key="a">A</button>
+          <button class="key" data-key="s">S</button>
+          <button class="key" data-key="d">D</button>
+          <button class="key" data-key="f">F</button>
+          <button class="key" data-key="g">G</button>
+          <button class="key" data-key="h">H</button>
+          <button class="key" data-key="j">J</button>
+          <button class="key" data-key="k">K</button>
+          <button class="key" data-key="l">L</button>
+          <div class="spacer-half"></div>
+        </div>
+        <div class="keyboard-row">
+          <button class="key key-wide" data-key="Enter">ENTER</button>
+          <button class="key" data-key="z">Z</button>
+          <button class="key" data-key="x">X</button>
+          <button class="key" data-key="c">C</button>
+          <button class="key" data-key="v">V</button>
+          <button class="key" data-key="b">B</button>
+          <button class="key" data-key="n">N</button>
+          <button class="key" data-key="m">M</button>
+          <button class="key key-wide" data-key="Backspace">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- End game modal -->
+    <div class="modal-overlay" id="end-modal">
+      <div class="modal">
+        <h2 id="end-title">Game Over</h2>
+        <p id="end-message"></p>
+        <button class="btn btn-primary" id="end-new-game">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="wordguess.js"></script>
+</body>
+</html>

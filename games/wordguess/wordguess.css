@@ -1,0 +1,261 @@
+/* Full-height game layout */
+.wg-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.game-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+}
+
+/* Board wrapper takes all remaining space, centers the board */
+.board-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  padding: 0.5rem;
+}
+
+/* Toast notifications */
+.toast-container {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.toast {
+  background-color: var(--fg-primary);
+  color: var(--bg-primary);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 700;
+  opacity: 1;
+  transition: opacity 0.4s;
+}
+
+.toast.fade-out {
+  opacity: 0;
+}
+
+/* Board */
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.row {
+  display: flex;
+  gap: 5px;
+}
+
+/* Tiles — use viewport units so they scale to fill space */
+.tile {
+  width: min(68px, 14vw, calc((100vh - 320px) / 6 - 5px));
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-secondary);
+  border-radius: 4px;
+  font-size: min(2rem, 6vw);
+  font-weight: 800;
+  text-transform: uppercase;
+  user-select: none;
+  transition: border-color 0.1s;
+}
+
+.tile.filled {
+  border-color: var(--fg-secondary);
+}
+
+/* Tile states after reveal */
+.tile.correct {
+  background-color: var(--accent-green);
+  color: #fff;
+  border-color: var(--accent-green);
+}
+
+.tile.present {
+  background-color: var(--accent-orange);
+  color: #fff;
+  border-color: var(--accent-orange);
+}
+
+.tile.absent {
+  background-color: var(--bg-secondary);
+  color: var(--fg-primary);
+  border-color: var(--bg-secondary);
+}
+
+/* Tile animations */
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 50%, 90% { transform: translateX(-6px); }
+  30%, 70% { transform: translateX(6px); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-24px); }
+  60% { transform: translateY(-12px); }
+}
+
+.tile.pop {
+  animation: pop 0.15s ease-in-out;
+}
+
+/* Flip reveal — two-stage transition */
+.tile.flip-out {
+  transform: scaleY(0);
+  transition: transform 0.3s ease-in;
+}
+
+.tile.flip-in {
+  transform: scaleY(1);
+  transition: transform 0.3s ease-out;
+}
+
+.row.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.tile.bounce {
+  animation: bounce 0.6s ease-in-out;
+}
+
+/* Keyboard — pinned to bottom */
+.keyboard {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 8px 120px;
+  flex-shrink: 0;
+}
+
+.keyboard-row {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+
+.spacer-half {
+  flex: 0.5;
+  min-width: 0;
+}
+
+.key {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-secondary);
+  color: var(--fg-primary);
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.15s, color 0.15s, transform 0.1s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.key:hover {
+  filter: brightness(1.15);
+}
+
+.key:active {
+  transform: scale(0.93);
+}
+
+.key-wide {
+  flex: 1.5 1 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+/* Keyboard key states */
+.key.correct {
+  background-color: var(--accent-green);
+  color: #fff;
+}
+
+.key.present {
+  background-color: var(--accent-orange);
+  color: #fff;
+}
+
+.key.absent {
+  background-color: var(--fg-secondary);
+  color: var(--bg-primary);
+  opacity: 0.5;
+}
+
+/* Responsive */
+@media (max-width: 420px) {
+  .key {
+    height: 52px;
+    font-size: 1rem;
+  }
+
+  .keyboard-row {
+    gap: 4px;
+  }
+
+  .keyboard {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 340px) {
+  .key {
+    height: 48px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .tile.pop,
+  .tile.flip,
+  .row.shake,
+  .tile.bounce {
+    animation: none;
+  }
+
+  .key,
+  .tile,
+  .toast {
+    transition: none;
+  }
+}
