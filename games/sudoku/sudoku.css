@@ -46,7 +46,7 @@
   background-color: var(--fg-secondary);
   border: 2px solid var(--fg-primary);
   border-radius: 4px;
-  max-width: 450px;
+  width: min(680px, 100%);
   margin: 0 auto;
   aspect-ratio: 1;
   overflow: hidden;
@@ -57,7 +57,7 @@
   align-items: center;
   justify-content: center;
   background-color: var(--bg-primary);
-  font-size: clamp(1rem, 4vw, 1.5rem);
+  font-size: clamp(1.2rem, 4vw, 2rem);
   font-weight: 600;
   cursor: pointer;
   position: relative;
@@ -137,6 +137,11 @@
   font-weight: 400;
   color: var(--fg-secondary);
   line-height: 1;
+}
+
+.pencil-marks span.mark-highlighted {
+  color: var(--accent-purple);
+  font-weight: 700;
 }
 
 /* Actions */

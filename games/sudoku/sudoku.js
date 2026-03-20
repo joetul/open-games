@@ -14,7 +14,7 @@ let timerSeconds = 0;
 let timerInterval = null;
 let timerPaused = false;
 let gameWon = false;
-let errorsShown = false;
+let errorsShown = true;
 
 // ─── Sudoku Generator ────────────────────────────────────────────────────────
 
@@ -259,6 +259,9 @@ function updateHighlights() {
   gridEl.querySelectorAll('.cell').forEach(c => {
     c.classList.remove('selected', 'highlighted', 'same-number');
   });
+  gridEl.querySelectorAll('.pencil-marks span').forEach(s => {
+    s.classList.remove('mark-highlighted');
+  });
 
   if (!selectedCell) return;
 
@@ -280,6 +283,12 @@ function updateHighlights() {
       // Highlight same number
       if (selectedValue && (board[r][c] === selectedValue || puzzle[r][c] === selectedValue)) {
         cell.classList.add('same-number');
+      }
+
+      // Highlight matching pencil marks
+      if (selectedValue && board[r][c] === 0 && puzzle[r][c] === 0 && pencilMarks[r][c].has(selectedValue)) {
+        const mark = cell.querySelector(`.pencil-marks [data-mark="${selectedValue}"]`);
+        if (mark) mark.classList.add('mark-highlighted');
       }
     }
   }
@@ -343,13 +352,13 @@ function placeNumber(num) {
     const prevValue = board[row][col];
     const prevMarks = new Set(pencilMarks[row][col]);
 
-    undoStack.push({ type: 'number', row, col, prevValue, prevMarks });
-
     board[row][col] = num;
     pencilMarks[row][col] = new Set();
 
     // Remove this number from pencil marks in same row/col/box
-    clearRelatedPencilMarks(row, col, num);
+    const clearedMarks = clearRelatedPencilMarks(row, col, num);
+
+    undoStack.push({ type: 'number', row, col, prevValue, prevMarks, clearedMarks });
   }
 
   updateAllCells();
@@ -358,18 +367,31 @@ function placeNumber(num) {
 }
 
 function clearRelatedPencilMarks(row, col, num) {
+  const cleared = []; // track what we remove so undo can restore
   const boxRow = Math.floor(row / 3) * 3;
   const boxCol = Math.floor(col / 3) * 3;
 
+  const seen = new Set();
+  const tryRemove = (r, c) => {
+    const key = `${r},${c}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    if (pencilMarks[r][c].has(num)) {
+      pencilMarks[r][c].delete(num);
+      cleared.push({ row: r, col: c, num });
+    }
+  };
+
   for (let i = 0; i < 9; i++) {
-    pencilMarks[row][i].delete(num);
-    pencilMarks[i][col].delete(num);
+    tryRemove(row, i);
+    tryRemove(i, col);
   }
   for (let r = boxRow; r < boxRow + 3; r++) {
     for (let c = boxCol; c < boxCol + 3; c++) {
-      pencilMarks[r][c].delete(num);
+      tryRemove(r, c);
     }
   }
+  return cleared;
 }
 
 function eraseCell() {
@@ -398,6 +420,13 @@ function undo() {
 
   board[row][col] = action.prevValue || 0;
   pencilMarks[row][col] = action.prevMarks || new Set();
+
+  // Restore pencil marks cleared from related cells
+  if (action.clearedMarks) {
+    for (const { row: r, col: c, num } of action.clearedMarks) {
+      pencilMarks[r][c].add(num);
+    }
+  }
 
   // Re-select the cell that was undone
   selectedCell = { row, col };
@@ -463,8 +492,8 @@ function resumeGame() {
 function newGame() {
   // Reset state
   gameWon = false;
-  errorsShown = false;
-  checkBtn.classList.remove('active');
+  errorsShown = true;
+  checkBtn.classList.add('active');
   selectedCell = null;
   undoStack = [];
   stopTimer();
