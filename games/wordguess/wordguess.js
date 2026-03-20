@@ -118,6 +118,7 @@ function submitGuess() {
 
   // Reveal tiles with animation
   revealInProgress = true;
+  const revealedRow = currentRow;
   revealRow(currentRow, guess, states, () => {
     revealInProgress = false;
 
@@ -127,7 +128,7 @@ function submitGuess() {
     // Check win/lose
     if (guess === targetWord) {
       gameOver = true;
-      bounceRow(currentRow - 1);
+      bounceRow(revealedRow);
       setTimeout(() => {
         endTitle.textContent = 'Congratulations!';
         endMessage.textContent = `You got it in ${guesses.length} ${guesses.length === 1 ? 'guess' : 'guesses'}!`;

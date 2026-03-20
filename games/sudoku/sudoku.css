@@ -204,9 +204,6 @@
   opacity: 0.5;
 }
 
-.timer.paused #timer-pause svg {
-  /* Play icon override */
-}
 
 /* Responsive */
 @media (max-width: 500px) {
