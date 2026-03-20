@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sudoku - Open Games</title>
+  <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/css/reset.css">
+  <link rel="stylesheet" href="../../shared/css/theme.css">
+  <link rel="stylesheet" href="../../shared/css/common.css">
+  <link rel="stylesheet" href="sudoku.css">
+  <script src="../../shared/js/theme-toggle.js" defer></script>
+</head>
+<body>
+  <div class="page">
+    <header class="site-header container">
+      <a href="../../">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        <h1>Sudoku</h1>
+      </a>
+      <button class="theme-toggle" aria-label="Toggle theme"></button>
+    </header>
+
+    <main class="container">
+      <!-- Controls bar -->
+      <div class="controls">
+        <div class="controls-left">
+          <div class="difficulty-group" role="group" aria-label="Difficulty">
+            <button class="btn btn-secondary difficulty-btn active" data-difficulty="easy">Easy</button>
+            <button class="btn btn-secondary difficulty-btn" data-difficulty="medium">Medium</button>
+            <button class="btn btn-secondary difficulty-btn" data-difficulty="hard">Hard</button>
+          </div>
+          <button class="btn btn-primary" id="new-game-btn">New Game</button>
+        </div>
+        <div class="controls-right">
+          <div class="timer" aria-label="Timer">
+            <span id="timer-display">00:00</span>
+            <button class="btn btn-secondary btn-small" id="timer-pause" aria-label="Pause timer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sudoku grid -->
+      <div class="sudoku-grid" id="sudoku-grid" role="grid" aria-label="Sudoku puzzle"></div>
+
+      <!-- Action buttons -->
+      <div class="actions">
+        <button class="btn btn-secondary" id="undo-btn" aria-label="Undo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Undo
+        </button>
+        <button class="btn btn-secondary" id="pencil-btn" aria-label="Toggle pencil mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+          Pencil
+        </button>
+        <button class="btn btn-secondary" id="erase-btn" aria-label="Erase cell">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16l7-7 10 10z"/><path d="m17.586 6.414 3 3"/></svg>
+          Erase
+        </button>
+        <button class="btn btn-secondary" id="check-btn" aria-label="Check for errors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Check
+        </button>
+      </div>
+
+      <!-- Number pad -->
+      <div class="numpad" role="group" aria-label="Number pad">
+        <button class="numpad-btn" data-num="1">1</button>
+        <button class="numpad-btn" data-num="2">2</button>
+        <button class="numpad-btn" data-num="3">3</button>
+        <button class="numpad-btn" data-num="4">4</button>
+        <button class="numpad-btn" data-num="5">5</button>
+        <button class="numpad-btn" data-num="6">6</button>
+        <button class="numpad-btn" data-num="7">7</button>
+        <button class="numpad-btn" data-num="8">8</button>
+        <button class="numpad-btn" data-num="9">9</button>
+      </div>
+
+      <!-- Win modal -->
+      <div class="modal-overlay" id="win-modal">
+        <div class="modal">
+          <h2>Congratulations!</h2>
+          <p id="win-message">You solved the puzzle!</p>
+          <button class="btn btn-primary" id="win-new-game">Play Again</button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p>Built for fun. <a href="../../" style="color: var(--accent-purple);">Back to Games</a></p>
+    </footer>
+  </div>
+
+  <script type="module" src="sudoku.js"></script>
+</body>
+</html>

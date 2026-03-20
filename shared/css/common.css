@@ -1,0 +1,208 @@
+/* Typography */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+}
+
+/* Layout */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Header */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid var(--bg-secondary);
+}
+
+.site-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.site-header a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Theme toggle */
+.theme-toggle {
+  background: none;
+  border: 2px solid var(--bg-secondary);
+  border-radius: var(--radius);
+  padding: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent-purple);
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--fg-primary);
+  transition: fill 0.2s;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background-color: var(--accent-purple);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+.btn-secondary {
+  background-color: var(--bg-secondary);
+  color: var(--fg-primary);
+}
+
+.btn-secondary:hover {
+  filter: brightness(1.15);
+}
+
+.btn-active {
+  background-color: var(--accent-purple);
+  color: #fff;
+}
+
+/* Game cards */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem 0;
+}
+
+.game-card {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.game-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.game-card h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.game-card p {
+  color: var(--fg-secondary);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.game-card .card-icon {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.modal h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.modal p {
+  color: var(--fg-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* Footer */
+.site-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--fg-secondary);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--bg-secondary);
+  margin-top: auto;
+}
+
+/* Page wrapper for sticky footer */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page main {
+  flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .site-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .game-grid {
+    grid-template-columns: 1fr;
+  }
+}

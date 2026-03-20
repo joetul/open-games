@@ -1,0 +1,237 @@
+/* Controls */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1rem 0;
+}
+
+.controls-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.difficulty-group {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.difficulty-btn.active {
+  background-color: var(--accent-purple);
+  color: #fff;
+}
+
+.timer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.btn-small {
+  padding: 0.3rem 0.4rem;
+}
+
+/* Sudoku Grid */
+.sudoku-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 1px;
+  background-color: var(--fg-secondary);
+  border: 2px solid var(--fg-primary);
+  border-radius: 4px;
+  max-width: 450px;
+  margin: 0 auto;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-primary);
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.15s;
+  user-select: none;
+}
+
+/* Box borders — thicker lines every 3 cells */
+.cell[data-col="2"],
+.cell[data-col="5"] {
+  border-right: 2px solid var(--fg-primary);
+}
+
+.cell[data-row="2"],
+.cell[data-row="5"] {
+  border-bottom: 2px solid var(--fg-primary);
+}
+
+/* Given (pre-filled) cells */
+.cell.given {
+  color: var(--fg-primary);
+  font-weight: 700;
+}
+
+/* User-entered cells */
+.cell.user-input {
+  color: var(--accent-purple);
+}
+
+/* Selected cell */
+.cell.selected {
+  background-color: var(--bg-selection);
+}
+
+/* Highlight cells in same row/col/box */
+.cell.highlighted {
+  background-color: var(--bg-secondary);
+}
+
+/* Same number highlight */
+.cell.same-number {
+  background-color: var(--bg-secondary);
+  color: var(--accent-cyan);
+}
+
+/* Error state */
+.cell.error {
+  color: var(--accent-red);
+  background-color: rgba(255, 85, 85, 0.1);
+}
+
+.cell.error::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent-red);
+  border-radius: 50%;
+}
+
+/* Pencil marks */
+.pencil-marks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+}
+
+.pencil-marks span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.4rem, 1.5vw, 0.6rem);
+  font-weight: 400;
+  color: var(--fg-secondary);
+  line-height: 1;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 0;
+  flex-wrap: wrap;
+}
+
+/* Number pad */
+.numpad {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0 1rem;
+  flex-wrap: wrap;
+}
+
+.numpad-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-secondary);
+  color: var(--fg-primary);
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s, transform 0.1s;
+}
+
+.numpad-btn:hover {
+  background-color: var(--accent-purple);
+  color: #fff;
+}
+
+.numpad-btn:active {
+  transform: scale(0.93);
+}
+
+.numpad-btn.completed {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Pencil mode active indicator */
+#pencil-btn.active {
+  background-color: var(--accent-purple);
+  color: #fff;
+}
+
+/* Timer paused state */
+.timer.paused #timer-display {
+  opacity: 0.5;
+}
+
+.timer.paused #timer-pause svg {
+  /* Play icon override */
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .sudoku-grid {
+    max-width: 100%;
+  }
+
+  .actions {
+    gap: 0.35rem;
+  }
+
+  .actions .btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .numpad-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .cell,
+  .numpad-btn,
+  .btn {
+    transition: none;
+  }
+}

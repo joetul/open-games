@@ -1,0 +1,44 @@
+:root,
+[data-theme="dark"] {
+  --bg-primary: #282a36;
+  --bg-secondary: #44475a;
+  --bg-selection: #44475a;
+  --fg-primary: #f8f8f2;
+  --fg-secondary: #6272a4;
+  --accent-cyan: #8be9fd;
+  --accent-green: #50fa7b;
+  --accent-orange: #ffb86c;
+  --accent-pink: #ff79c6;
+  --accent-purple: #bd93f9;
+  --accent-red: #ff5555;
+  --accent-yellow: #f1fa8c;
+
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+
+[data-theme="light"] {
+  --bg-primary: #f8f8f2;
+  --bg-secondary: #e6e6e0;
+  --bg-selection: #d6d6d0;
+  --fg-primary: #282a36;
+  --fg-secondary: #6272a4;
+  --accent-cyan: #0097a7;
+  --accent-green: #2e7d32;
+  --accent-orange: #e65100;
+  --accent-pink: #c2185b;
+  --accent-purple: #7c4dff;
+  --accent-red: #d32f2f;
+  --accent-yellow: #f57f17;
+
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--fg-primary);
+  transition: background-color 0.3s, color 0.3s;
+}
