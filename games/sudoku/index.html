@@ -51,9 +51,9 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
           Undo
         </button>
-        <button class="btn btn-secondary" id="pencil-btn" aria-label="Toggle pencil mode">
+        <button class="btn btn-secondary" id="pencil-btn" aria-label="Toggle notes mode">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-          Pencil
+          Notes
         </button>
         <button class="btn btn-secondary" id="erase-btn" aria-label="Erase cell">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16l7-7 10 10z"/><path d="m17.586 6.414 3 3"/></svg>
@@ -76,6 +76,15 @@
         <button class="numpad-btn" data-num="7">7</button>
         <button class="numpad-btn" data-num="8">8</button>
         <button class="numpad-btn" data-num="9">9</button>
+      </div>
+
+      <!-- Pause modal -->
+      <div class="modal-overlay" id="pause-modal">
+        <div class="modal">
+          <h2>Game Paused</h2>
+          <p id="pause-time">00:00</p>
+          <button class="btn btn-primary" id="pause-resume">Resume</button>
+        </div>
       </div>
 
       <!-- Win modal -->

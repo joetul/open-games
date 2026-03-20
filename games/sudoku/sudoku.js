@@ -145,6 +145,9 @@ const checkBtn = document.getElementById('check-btn');
 const winModal = document.getElementById('win-modal');
 const winMessage = document.getElementById('win-message');
 const winNewGame = document.getElementById('win-new-game');
+const pauseModal = document.getElementById('pause-modal');
+const pauseTime = document.getElementById('pause-time');
+const pauseResume = document.getElementById('pause-resume');
 
 // ─── Rendering ───────────────────────────────────────────────────────────────
 
@@ -305,13 +308,13 @@ function updateNumpadCounts() {
 // ─── Interaction ─────────────────────────────────────────────────────────────
 
 function selectCell(row, col) {
-  if (gameWon) return;
+  if (gameWon || timerPaused) return;
   selectedCell = { row, col };
   updateHighlights();
 }
 
 function placeNumber(num) {
-  if (!selectedCell || gameWon) return;
+  if (!selectedCell || gameWon || timerPaused) return;
   const { row, col } = selectedCell;
 
   // Can't modify given cells
@@ -370,7 +373,7 @@ function clearRelatedPencilMarks(row, col, num) {
 }
 
 function eraseCell() {
-  if (!selectedCell || gameWon) return;
+  if (!selectedCell || gameWon || timerPaused) return;
   const { row, col } = selectedCell;
   if (puzzle[row][col] !== 0) return;
 
@@ -388,7 +391,7 @@ function eraseCell() {
 }
 
 function undo() {
-  if (undoStack.length === 0 || gameWon) return;
+  if (undoStack.length === 0 || gameWon || timerPaused) return;
 
   const action = undoStack.pop();
   const { row, col } = action;
@@ -437,20 +440,22 @@ function stopTimer() {
   timerInterval = null;
 }
 
-function toggleTimerPause() {
-  if (gameWon) return;
+function pauseGame() {
+  if (gameWon || timerPaused) return;
+  timerPaused = true;
+  stopTimer();
+  timerPauseBtn.closest('.timer').classList.add('paused');
+  timerPauseBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>';
+  pauseTime.textContent = formatTime(timerSeconds);
+  pauseModal.classList.add('active');
+}
 
-  if (timerPaused) {
-    timerPaused = false;
-    timerPauseBtn.closest('.timer').classList.remove('paused');
-    timerPauseBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
-    startTimer();
-  } else {
-    timerPaused = true;
-    stopTimer();
-    timerPauseBtn.closest('.timer').classList.add('paused');
-    timerPauseBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>';
-  }
+function resumeGame() {
+  timerPaused = false;
+  timerPauseBtn.closest('.timer').classList.remove('paused');
+  timerPauseBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+  pauseModal.classList.remove('active');
+  startTimer();
 }
 
 // ─── New Game ────────────────────────────────────────────────────────────────
@@ -469,6 +474,7 @@ function newGame() {
   timerPauseBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
   timerDisplay.textContent = '00:00';
   winModal.classList.remove('active');
+  pauseModal.classList.remove('active');
 
   // Generate
   solution = generateSolvedGrid();
@@ -538,7 +544,8 @@ undoBtn.addEventListener('click', undo);
 pencilBtn.addEventListener('click', togglePencilMode);
 eraseBtn.addEventListener('click', eraseCell);
 checkBtn.addEventListener('click', checkErrors);
-timerPauseBtn.addEventListener('click', toggleTimerPause);
+timerPauseBtn.addEventListener('click', pauseGame);
+pauseResume.addEventListener('click', resumeGame);
 
 // Difficulty buttons
 document.querySelectorAll('.difficulty-btn').forEach(btn => {
