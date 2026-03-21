@@ -43,6 +43,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn = document.querySelector('.theme-toggle');
   if (btn) {
     btn.addEventListener('click', toggleTheme);
-    updateToggleIcon(getPreferredTheme());
   }
 });

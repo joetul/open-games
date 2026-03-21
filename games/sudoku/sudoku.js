@@ -307,7 +307,8 @@ function updateNumpadCounts() {
     let count = 0;
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
-        if (board[r][c] === num || puzzle[r][c] === num) count++;
+        const val = puzzle[r][c] !== 0 ? puzzle[r][c] : board[r][c];
+        if (val === num) count++;
       }
     }
     btn.classList.toggle('completed', count >= 9);
@@ -470,7 +471,8 @@ function stopTimer() {
 }
 
 function pauseGame() {
-  if (gameWon || timerPaused) return;
+  if (gameWon) return;
+  if (timerPaused) { resumeGame(); return; }
   timerPaused = true;
   stopTimer();
   timerPauseBtn.closest('.timer').classList.add('paused');
