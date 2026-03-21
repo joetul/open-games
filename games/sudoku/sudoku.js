@@ -582,9 +582,11 @@ pauseResume.addEventListener('click', resumeGame);
 // Difficulty buttons
 document.querySelectorAll('.difficulty-btn').forEach(btn => {
   btn.addEventListener('click', () => {
+    if (btn.dataset.difficulty === difficulty) return;
     document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     difficulty = btn.dataset.difficulty;
+    newGame();
   });
 });
 
