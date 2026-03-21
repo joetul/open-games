@@ -180,9 +180,13 @@
 }
 
 .key.absent {
-  background-color: var(--fg-secondary);
-  color: var(--bg-primary);
-  opacity: 0.5;
+  background-color: #1e1f29;
+  color: #5a5a6a;
+}
+
+[data-theme="light"] .key.absent {
+  background-color: #787878;
+  color: #fff;
 }
 
 /* Responsive */
