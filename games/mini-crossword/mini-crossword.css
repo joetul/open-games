@@ -283,6 +283,29 @@
   }
 }
 
+/* Desktop: tighten spacing for scaled layout */
+@media (min-width: 1024px) {
+  .controls {
+    padding: 0.5rem 0;
+  }
+
+  .active-clue-bar {
+    margin-bottom: 0.5rem;
+  }
+
+  .mini-grid-wrapper {
+    margin-bottom: 0.75rem;
+  }
+
+  .clue-panels {
+    margin-bottom: 0.5rem;
+  }
+
+  .actions {
+    padding: 0.25rem 0 0.5rem;
+  }
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .cw-cell,

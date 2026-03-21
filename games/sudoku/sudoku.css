@@ -235,6 +235,21 @@
   }
 }
 
+/* Desktop: tighten spacing for scaled layout */
+@media (min-width: 1024px) {
+  .controls {
+    padding: 0.5rem 0;
+  }
+
+  .actions {
+    padding: 0.5rem 0;
+  }
+
+  .numpad {
+    padding: 0.25rem 0 0.5rem;
+  }
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .cell,

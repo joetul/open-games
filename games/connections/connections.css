@@ -243,6 +243,17 @@
   }
 }
 
+/* Desktop: tighten spacing for scaled layout */
+@media (min-width: 1024px) {
+  .prompt {
+    padding: 0.4rem 0;
+  }
+
+  .controls {
+    padding: 0.25rem 0 1rem;
+  }
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .word-tile,

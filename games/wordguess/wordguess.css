@@ -119,7 +119,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 8px 8px 120px;
+  padding: 8px 8px 1rem;
   flex-shrink: 0;
 }
 
@@ -209,6 +209,17 @@
   .key {
     height: 48px;
     font-size: 0.9rem;
+  }
+}
+
+/* Desktop: tighten spacing for scaled layout */
+@media (min-width: 1024px) {
+  .tile {
+    width: min(68px, 14vw, calc((100vh - 260px) / 6 - 5px));
+  }
+
+  .key {
+    height: 50px;
   }
 }
 
