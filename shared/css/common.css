@@ -13,30 +13,29 @@ body {
 
 /* Header */
 .site-header {
+  position: relative;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--bg-secondary);
 }
 
 .site-header h1 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  flex: 1;
-  text-align: center;
+  pointer-events: none;
 }
 
-/* Back arrow + title link on game pages */
-.site-header > a {
+/* Back arrow on game pages */
+.back-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  flex: 1;
-}
-
-.site-header > a h1 {
-  text-align: left;
+  z-index: 1;
 }
 
 /* Header right icons row */
@@ -227,16 +226,6 @@ body {
 @keyframes toast-pop {
   0% { transform: scale(0.8); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
-}
-
-/* Footer */
-.site-footer {
-  text-align: center;
-  padding: 2rem 1rem;
-  color: var(--fg-secondary);
-  font-size: 0.8rem;
-  border-top: 1px solid var(--bg-secondary);
-  margin-top: auto;
 }
 
 /* Page wrapper for sticky footer */
