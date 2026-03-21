@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 
 /**
- * Generates 5x5 mini crossword puzzles from the xd-clues dataset.
+ * Generates 5x5 mini crossword puzzles.
+ *
+ * Words are sourced from the MsFit Crossword Dataset (https://github.com/nzfeng/crossword-dataset),
+ * and clues are sourced from the xd-clues dataset (https://xd.saul.pw/data/).
  *
  * Usage:
  *   node scripts/generate-mini.js <clues.tsv> [target-count] [pack-size]
  *
  * Example:
- *   node scripts/generate-mini.js /tmp/xd-clues/xd/clues.tsv 1000 100
+ *   node scripts/generate-mini.js /tmp/xd-clues/xd/clues.tsv 3000 100
  *
  * Output:
  *   games/mini-crossword/puzzles/pack-001.js ... pack-NNN.js
@@ -18,7 +21,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
 
 const cluesFile = process.argv[2];
-const TARGET = parseInt(process.argv[3]) || 1000;
+const TARGET = parseInt(process.argv[3]) || 3000;
 const PACK_SIZE = parseInt(process.argv[4]) || 100;
 
 if (!cluesFile) {
@@ -27,18 +30,41 @@ if (!cluesFile) {
 }
 
 const outDir = resolve(import.meta.dirname, '..', 'games', 'mini-crossword', 'puzzles');
+const dataDir = resolve(import.meta.dirname, '..', 'data');
 mkdirSync(outDir, { recursive: true });
 
-// ─── Step 1: Parse clues and build word database ────────────────────────────
+// ─── Step 1: Load allowed words from MsFit Crossword Dataset ────────────────
 
-console.log('Parsing clues database...');
+console.log('Loading MsFit Crossword Dataset word lists...');
+
+function loadWordList(filename) {
+  const filepath = resolve(dataDir, filename);
+  const content = readFileSync(filepath, 'utf-8');
+  const words = new Set();
+  for (const line of content.split('\n')) {
+    const word = line.trim().toUpperCase();
+    if (word.length === 5 && /^[A-Z]+$/.test(word)) {
+      words.add(word);
+    }
+  }
+  return words;
+}
+
+const allowedWords = loadWordList('crossword-core.txt');
+// Also include contemporary words
+for (const word of loadWordList('crossword-contemporary.txt')) {
+  allowedWords.add(word);
+}
+
+console.log(`Loaded ${allowedWords.size} allowed 5-letter words from MsFit dataset`);
+
+// ─── Step 2: Parse clues from xd-clues dataset ─────────────────────────────
+
+console.log('Parsing xd-clues database for clues...');
 const raw = readFileSync(cluesFile, 'utf-8');
 const lines = raw.split('\n');
 
-const MIN_FREQUENCY = 10; // Only use words that appear 10+ times across puzzles
-
 const allClues = new Map(); // word → [clue1, clue2, ...]
-const wordFreq = new Map(); // word → total appearance count
 
 for (let i = 1; i < lines.length; i++) {
   const parts = lines[i].split('\t');
@@ -50,7 +76,8 @@ for (let i = 1; i < lines.length; i++) {
   if (!answer || answer.length !== 5 || !/^[A-Z]+$/.test(answer)) continue;
   if (!clue || clue.length < 3) continue;
 
-  wordFreq.set(answer, (wordFreq.get(answer) || 0) + 1);
+  // Only collect clues for words in our allowed set
+  if (!allowedWords.has(answer)) continue;
 
   if (!allClues.has(answer)) {
     allClues.set(answer, []);
@@ -62,20 +89,25 @@ for (let i = 1; i < lines.length; i++) {
   }
 }
 
-// Filter to only common words (appear frequently in published crosswords)
+// Final word list: must be in allowed set AND have at least one clue
 const wordClues = new Map();
-for (const [word, freq] of wordFreq) {
-  if (freq >= MIN_FREQUENCY && allClues.has(word)) {
-    wordClues.set(word, allClues.get(word));
+for (const [word, clues] of allClues) {
+  if (clues.length > 0) {
+    wordClues.set(word, clues);
   }
 }
 
 const wordList = [...wordClues.keys()];
 const wordSet = new Set(wordList);
 
-console.log(`Found ${wordFreq.size} unique 5-letter words, filtered to ${wordList.length} common words (freq >= ${MIN_FREQUENCY})`);
+console.log(`${wordList.length} words have both allowed status and available clues`);
 
-// ─── Step 2: Build prefix index for fast lookups ────────────────────────────
+if (wordList.length < 500) {
+  console.error('Too few words to generate puzzles. Check that data files are present.');
+  process.exit(1);
+}
+
+// ─── Step 3: Build prefix index for fast lookups ────────────────────────────
 
 // prefixes[length][prefix] = true
 // For a 5-letter word "CRANE": prefixes for "C", "CR", "CRA", "CRAN", "CRANE"
@@ -91,7 +123,7 @@ function hasPrefix(partial) {
   return prefixSets[partial.length].has(partial);
 }
 
-// ─── Step 3: Grid generator with backtracking ───────────────────────────────
+// ─── Step 4: Grid generator with backtracking ───────────────────────────────
 
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -160,7 +192,7 @@ function fillGrid(rows, rowIdx) {
   return false;
 }
 
-// ─── Step 4: Generate puzzles ───────────────────────────────────────────────
+// ─── Step 5: Generate puzzles ───────────────────────────────────────────────
 
 console.log(`Generating up to ${TARGET} puzzles...`);
 
@@ -184,10 +216,10 @@ while (puzzles.length < TARGET && attempts < maxAttempts) {
     cols.push(grid[0][c] + grid[1][c] + grid[2][c] + grid[3][c] + grid[4][c]);
   }
 
-  // Verify all columns are valid words with clues
+  // Verify all words (rows + columns) have clues
   let allHaveClues = true;
-  for (const col of cols) {
-    if (!wordClues.has(col)) {
+  for (const word of [...grid, ...cols]) {
+    if (!wordClues.has(word)) {
       allHaveClues = false;
       break;
     }
@@ -233,7 +265,7 @@ while (puzzles.length < TARGET && attempts < maxAttempts) {
 
 console.log(`\nGenerated ${puzzles.length} puzzles in ${attempts} attempts`);
 
-// ─── Step 5: Write puzzle packs ─────────────────────────────────────────────
+// ─── Step 6: Write puzzle packs ─────────────────────────────────────────────
 
 const totalPacks = Math.ceil(puzzles.length / PACK_SIZE);
 

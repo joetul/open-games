@@ -39,7 +39,7 @@ Then open [http://localhost:8000](http://localhost:8000) in your browser.
 | **Word Guess** | Word lists from [lynn/hello-wordl](https://github.com/lynn/hello-wordl) (MIT) — answers curated from Peter Norvig's word frequency list, valid guesses from the Scrabble tournament word list. |
 | **Connections** | Puzzles are AI-generated. |
 | **Crossword** | 3,000 puzzles converted from the [XD Puzzles](https://xd.saul.pw/) dataset — pre-1965 NY Times crosswords (public domain). |
-| **Mini Crossword** | 3,000 puzzles generated using a backtracking grid builder with clues from the [xd-clues](https://xd.saul.pw/data/) dataset (6M+ clue-answer pairs from published crosswords). |
+| **Mini Crossword** | 3,000 puzzles generated using a backtracking grid builder with words from the [MsFit Crossword Dataset](https://github.com/nzfeng/crossword-dataset) (GPL-3.0) and clues from the [xd-clues](https://xd.saul.pw/data/) dataset (6M+ clue-answer pairs from published crosswords). |
 
 ## License
 
