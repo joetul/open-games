@@ -120,32 +120,14 @@ function animateCorrectGuess(group) {
   const selectedSet = new Set(selectedWords);
   const allTiles = gridEl.querySelectorAll('.word-tile');
 
-  // Step 1: Bounce selected tiles (one by one, staggered)
-  const selectedTiles = [];
+  // Step 1: Fade out selected tiles
   allTiles.forEach(tile => {
     if (selectedSet.has(tile.dataset.word)) {
-      selectedTiles.push(tile);
+      tile.classList.add('fade-out');
     }
   });
 
-  selectedTiles.forEach((tile, i) => {
-    setTimeout(() => {
-      tile.classList.add('bounce');
-    }, i * 80);
-  });
-
-  // Step 2: After bounce, flip out selected tiles
-  const bounceEnd = selectedTiles.length * 80 + 400;
-  setTimeout(() => {
-    selectedTiles.forEach((tile, i) => {
-      setTimeout(() => {
-        tile.classList.add('flip-out');
-      }, i * 60);
-    });
-  }, bounceEnd);
-
-  // Step 3: After flip, update state and reveal group bar
-  const flipEnd = bounceEnd + selectedTiles.length * 60 + 350;
+  // Step 2: After fade, remove tiles and show group bar (pops bigger then settles)
   setTimeout(() => {
     solvedGroups.push(group);
     remainingWords = remainingWords.filter(w => !selectedSet.has(w));
@@ -162,9 +144,9 @@ function animateCorrectGuess(group) {
         endTitle.textContent = 'Congratulations!';
         endMessage.textContent = 'You found all four groups!';
         showEndModal();
-      }, 500);
+      }, 600);
     }
-  }, flipEnd);
+  }, 400);
 }
 
 function animateWrongGuess() {

@@ -69,12 +69,11 @@
   border-radius: 8px;
   padding: 1rem 1.25rem;
   text-align: center;
-  transform-origin: top center;
-  overflow: hidden;
+  transform-origin: center;
 }
 
 .solved-group.reveal {
-  animation: group-grow 0.5s ease forwards;
+  animation: group-grow 0.6s ease forwards;
 }
 
 .solved-group .group-category {
@@ -99,15 +98,15 @@
 @keyframes group-grow {
   0% {
     opacity: 0;
-    transform: scaleY(0);
+    transform: scale(0.85);
   }
-  60% {
+  50% {
     opacity: 1;
-    transform: scaleY(1.03);
+    transform: scale(1.04);
   }
   100% {
     opacity: 1;
-    transform: scaleY(1);
+    transform: scale(1);
   }
 }
 
@@ -160,26 +159,11 @@
   background-color: var(--accent-purple);
 }
 
-/* Bounce before correct guess merge */
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-14px); }
-  70% { transform: translateY(-3px); }
-}
-
-.word-tile.bounce {
-  animation: bounce 0.4s ease;
-}
-
-/* Flip to reveal correct — tile flips and disappears */
-@keyframes flip-out {
-  0% { transform: scaleY(1); opacity: 1; }
-  50% { transform: scaleY(0); opacity: 1; }
-  100% { transform: scaleY(0); opacity: 0; }
-}
-
-.word-tile.flip-out {
-  animation: flip-out 0.35s ease-in forwards;
+/* Fade out selected tiles on correct guess */
+.word-tile.fade-out {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: none;
 }
 
