@@ -394,17 +394,20 @@ async function newGame() {
   pauseModal.classList.remove('active');
 
   // Load puzzle from pack
-  const puzzleData = await getRandomPuzzle(difficulty, currentPuzzleId);
-  currentPuzzleId = puzzleData.id;
-  solution = puzzleData.solution;
-  puzzle = puzzleData.puzzle;
-  board = puzzle.map(row => [...row]);
-  pencilMarks = Array.from({ length: 9 }, () =>
-    Array.from({ length: 9 }, () => new Set())
-  );
-  markPlayed(puzzleData.id);
-
-  renderGrid();
+  try {
+    const puzzleData = await getRandomPuzzle(difficulty, currentPuzzleId);
+    currentPuzzleId = puzzleData.id;
+    solution = puzzleData.solution;
+    puzzle = puzzleData.puzzle;
+    board = puzzle.map(row => [...row]);
+    pencilMarks = Array.from({ length: 9 }, () =>
+      Array.from({ length: 9 }, () => new Set())
+    );
+    markPlayed(puzzleData.id);
+    renderGrid();
+  } catch (err) {
+    console.error('Error loading puzzle:', err);
+  }
 }
 
 // ─── Keyboard Input ──────────────────────────────────────────────────────────

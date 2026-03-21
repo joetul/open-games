@@ -55,6 +55,9 @@
 .solved-group.diff-2 { background-color: var(--accent-cyan); color: #282a36; }
 .solved-group.diff-3 { background-color: var(--accent-purple); color: #fff; }
 
+[data-theme="light"] .solved-group.diff-1 { color: #fff; }
+[data-theme="light"] .solved-group.diff-2 { color: #fff; }
+
 @keyframes group-grow {
   0% {
     opacity: 0;
@@ -222,6 +225,9 @@
 .modal-result-row.diff-1 { background-color: var(--accent-green); color: #282a36; }
 .modal-result-row.diff-2 { background-color: var(--accent-cyan); color: #282a36; }
 .modal-result-row.diff-3 { background-color: var(--accent-purple); color: #fff; }
+
+[data-theme="light"] .modal-result-row.diff-1 { color: #fff; }
+[data-theme="light"] .modal-result-row.diff-2 { color: #fff; }
 
 /* Responsive */
 @media (max-width: 420px) {

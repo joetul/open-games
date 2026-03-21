@@ -27,14 +27,16 @@
   --fg-secondary: #6272a4;
   --accent-cyan: #0097a7;
   --accent-green: #2e7d32;
-  --accent-orange: #e65100;
+  --accent-orange: #b07500;
   --accent-pink: #c2185b;
   --accent-purple: #7c4dff;
   --accent-red: #d32f2f;
-  --accent-yellow: #f57f17;
+  --accent-yellow: #a89000;
 
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --radius: 8px;
+  --radius-lg: 12px;
 }
 
 body {

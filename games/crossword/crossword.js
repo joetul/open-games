@@ -211,6 +211,7 @@ function createClueItem(clue, dir) {
   li.appendChild(document.createTextNode(clue.clue));
 
   li.addEventListener('click', () => {
+    if (gameWon || timerPaused) return;
     direction = dir;
     selectClue(clue);
   });
