@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connections - Open Games</title>
+  <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/css/reset.css">
+  <link rel="stylesheet" href="../../shared/css/theme.css">
+  <link rel="stylesheet" href="../../shared/css/common.css">
+  <link rel="stylesheet" href="connections.css">
+  <script src="../../shared/js/theme-toggle.js" defer></script>
+</head>
+<body>
+  <div class="cn-page">
+    <header class="site-header container">
+      <a href="../../">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        <h1>Connections</h1>
+      </a>
+      <button class="theme-toggle" aria-label="Toggle theme"></button>
+    </header>
+
+    <main class="game-area">
+      <div class="toast-container" id="toast-container"></div>
+
+      <p class="prompt">Find four groups of four!</p>
+
+      <!-- Solved groups appear here -->
+      <div class="solved-groups" id="solved-groups"></div>
+
+      <!-- Word grid -->
+      <div class="word-grid" id="word-grid"></div>
+
+      <!-- Mistakes -->
+      <div class="mistakes" id="mistakes">
+        <span>Mistakes remaining:</span>
+        <div class="dots" id="mistake-dots">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button class="btn btn-secondary" id="shuffle-btn">Shuffle</button>
+        <button class="btn btn-secondary" id="deselect-btn">Deselect All</button>
+        <button class="btn btn-primary" id="submit-btn" disabled>Submit</button>
+      </div>
+
+      <!-- End modal -->
+      <div class="modal-overlay" id="end-modal">
+        <div class="modal">
+          <h2 id="end-title">Game Over</h2>
+          <p id="end-message"></p>
+          <div class="modal-results" id="modal-results"></div>
+          <button class="btn btn-primary" id="end-new-game">Play Again</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="connections.js"></script>
+</body>
+</html>
