@@ -766,8 +766,10 @@ function createHiddenInput() {
   });
 
   hiddenInput.addEventListener('keydown', (e) => {
-    // Let the main handler deal with special keys
+    // Let the main handler deal with special keys, but stop propagation
+    // so the document-level listener doesn't fire a second time
     if (e.key === 'Backspace' || e.key === 'Delete' || e.key.startsWith('Arrow') || e.key === 'Tab' || e.key === ' ') {
+      e.stopPropagation();
       handleKeydown(e);
     }
   });
