@@ -92,6 +92,7 @@ function createPuzzle(solvedGrid, diff) {
     easy: 32,
     medium: 42,
     hard: 52,
+    expert: 58,
   };
   const target = cellsToRemove[diff] || 32;
 
