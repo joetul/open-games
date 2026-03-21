@@ -66,11 +66,15 @@
 }
 
 .solved-group {
-  border-radius: var(--radius-lg);
+  border-radius: 8px;
   padding: 1rem 1.25rem;
   text-align: center;
-  animation: group-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transform-origin: center;
+  transform-origin: top center;
+  overflow: hidden;
+}
+
+.solved-group.reveal {
+  animation: group-grow 0.5s ease forwards;
 }
 
 .solved-group .group-category {
@@ -87,37 +91,23 @@
 }
 
 /* Difficulty colors */
-.solved-group.diff-0 {
-  background-color: var(--accent-yellow);
-  color: #282a36;
-}
+.solved-group.diff-0 { background-color: var(--accent-yellow); color: #282a36; }
+.solved-group.diff-1 { background-color: var(--accent-green); color: #282a36; }
+.solved-group.diff-2 { background-color: var(--accent-cyan); color: #282a36; }
+.solved-group.diff-3 { background-color: var(--accent-purple); color: #fff; }
 
-.solved-group.diff-1 {
-  background-color: var(--accent-green);
-  color: #282a36;
-}
-
-.solved-group.diff-2 {
-  background-color: var(--accent-cyan);
-  color: #282a36;
-}
-
-.solved-group.diff-3 {
-  background-color: var(--accent-purple);
-  color: #fff;
-}
-
-@keyframes group-pop {
+@keyframes group-grow {
   0% {
     opacity: 0;
-    transform: scaleY(0.3) scaleX(0.95);
+    transform: scaleY(0);
   }
-  50% {
+  60% {
     opacity: 1;
-    transform: scaleY(1.05) scaleX(1.01);
+    transform: scaleY(1.03);
   }
   100% {
-    transform: scaleY(1) scaleX(1);
+    opacity: 1;
+    transform: scaleY(1);
   }
 }
 
@@ -131,7 +121,6 @@
 }
 
 .word-tile {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,9 +137,9 @@
   text-align: center;
   cursor: pointer;
   user-select: none;
-  transition: transform 0.15s ease, background-color 0.2s ease, color 0.2s ease, opacity 0.3s ease;
   word-break: break-word;
   line-height: 1.2;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .word-tile:hover {
@@ -161,47 +150,48 @@
   transform: scale(0.96);
 }
 
-/* Selection with pop effect */
+/* Selection */
 .word-tile.selected {
   background-color: var(--accent-purple);
   color: #fff;
-  animation: tile-select 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes tile-select {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+.word-tile.selected:hover {
+  background-color: var(--accent-purple);
 }
 
-/* Bounce up animation for correct guess */
-.word-tile.bounce-up {
-  animation: bounce-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+/* Bounce before correct guess merge */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-14px); }
+  70% { transform: translateY(-3px); }
 }
 
-@keyframes bounce-up {
-  0% { transform: translateY(0); }
-  40% { transform: translateY(-16px); }
-  70% { transform: translateY(-4px); }
-  100% { transform: translateY(0); }
+.word-tile.bounce {
+  animation: bounce 0.4s ease;
 }
 
-/* Fade out tiles when forming group */
-.word-tile.dissolve {
-  opacity: 0;
-  transform: scale(0.8);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+/* Flip to reveal correct — tile flips and disappears */
+@keyframes flip-out {
+  0% { transform: scaleY(1); opacity: 1; }
+  50% { transform: scaleY(0); opacity: 1; }
+  100% { transform: scaleY(0); opacity: 0; }
+}
+
+.word-tile.flip-out {
+  animation: flip-out 0.35s ease-in forwards;
+  pointer-events: none;
 }
 
 /* Shake animation for wrong guess */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  10%, 50%, 90% { transform: translateX(-5px); }
-  30%, 70% { transform: translateX(5px); }
+  15%, 55% { transform: translateX(-5px); }
+  35%, 75% { transform: translateX(5px); }
 }
 
 .word-tile.shake {
-  animation: shake 0.5s ease-in-out;
+  animation: shake 0.4s ease-in-out;
 }
 
 /* Mistakes */

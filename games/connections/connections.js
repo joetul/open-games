@@ -5,14 +5,14 @@ import { PUZZLES } from './puzzles.js';
 
 const MAX_MISTAKES = 4;
 
-let puzzle = null;        // current puzzle
-let solvedGroups = [];    // solved group objects
-let selectedWords = [];   // currently selected words
-let remainingWords = [];  // words still on the grid
+let puzzle = null;
+let solvedGroups = [];
+let selectedWords = [];
+let remainingWords = [];
 let mistakes = 0;
 let gameOver = false;
-let guessedSets = [];     // track previous wrong guesses to prevent duplicates
-let isAnimating = false;  // lock during animations
+let guessedSets = [];
+let isAnimating = false;
 
 // ─── DOM References ──────────────────────────────────────────────────────────
 
@@ -68,14 +68,19 @@ function toggleWord(word) {
     selectedWords.push(word);
   }
 
-  renderGrid();
+  // Just toggle classes, no full re-render
+  const tiles = gridEl.querySelectorAll('.word-tile');
+  tiles.forEach(tile => {
+    tile.classList.toggle('selected', selectedWords.includes(tile.dataset.word));
+  });
   updateButtons();
 }
 
 function deselectAll() {
   if (isAnimating) return;
   selectedWords = [];
-  renderGrid();
+  const tiles = gridEl.querySelectorAll('.word-tile');
+  tiles.forEach(tile => tile.classList.remove('selected'));
   updateButtons();
 }
 
@@ -88,7 +93,6 @@ function shuffleRemaining() {
 function submitGuess() {
   if (selectedWords.length !== 4 || gameOver || isAnimating) return;
 
-  // Check duplicate guess
   const sortedGuess = [...selectedWords].sort().join(',');
   if (guessedSets.includes(sortedGuess)) {
     showToast('Already guessed!');
@@ -96,7 +100,6 @@ function submitGuess() {
   }
   guessedSets.push(sortedGuess);
 
-  // Check match
   const matchedGroup = puzzle.groups.find(g => {
     if (solvedGroups.includes(g)) return false;
     const groupWords = new Set(g.words);
@@ -114,34 +117,41 @@ function submitGuess() {
 
 function animateCorrectGuess(group) {
   isAnimating = true;
-
   const selectedSet = new Set(selectedWords);
+  const allTiles = gridEl.querySelectorAll('.word-tile');
 
-  // Step 1: Bounce the selected tiles
-  const tiles = gridEl.querySelectorAll('.word-tile');
-  tiles.forEach(tile => {
+  // Step 1: Bounce selected tiles (one by one, staggered)
+  const selectedTiles = [];
+  allTiles.forEach(tile => {
     if (selectedSet.has(tile.dataset.word)) {
-      tile.classList.add('bounce-up');
+      selectedTiles.push(tile);
     }
   });
 
-  // Step 2: After bounce, dissolve selected tiles
-  setTimeout(() => {
-    const tiles = gridEl.querySelectorAll('.word-tile');
-    tiles.forEach(tile => {
-      if (selectedSet.has(tile.dataset.word)) {
-        tile.classList.add('dissolve');
-      }
-    });
-  }, 400);
+  selectedTiles.forEach((tile, i) => {
+    setTimeout(() => {
+      tile.classList.add('bounce');
+    }, i * 80);
+  });
 
-  // Step 3: After dissolve, update state and reveal solved group
+  // Step 2: After bounce, flip out selected tiles
+  const bounceEnd = selectedTiles.length * 80 + 400;
+  setTimeout(() => {
+    selectedTiles.forEach((tile, i) => {
+      setTimeout(() => {
+        tile.classList.add('flip-out');
+      }, i * 60);
+    });
+  }, bounceEnd);
+
+  // Step 3: After flip, update state and reveal group bar
+  const flipEnd = bounceEnd + selectedTiles.length * 60 + 350;
   setTimeout(() => {
     solvedGroups.push(group);
     remainingWords = remainingWords.filter(w => !selectedSet.has(w));
     selectedWords = [];
 
-    renderSolved();
+    renderSolved(true);
     renderGrid();
     updateButtons();
     isAnimating = false;
@@ -154,13 +164,12 @@ function animateCorrectGuess(group) {
         showEndModal();
       }, 500);
     }
-  }, 750);
+  }, flipEnd);
 }
 
 function animateWrongGuess() {
   isAnimating = true;
 
-  // Check for "one away"
   const oneAway = puzzle.groups.some(g => {
     if (solvedGroups.includes(g)) return false;
     const groupWords = new Set(g.words);
@@ -172,7 +181,6 @@ function animateWrongGuess() {
     showToast('One away!');
   }
 
-  // Shake selected tiles
   const tiles = gridEl.querySelectorAll('.word-tile.selected');
   tiles.forEach(tile => {
     tile.classList.remove('shake');
@@ -183,10 +191,10 @@ function animateWrongGuess() {
   mistakes++;
   renderMistakes();
 
-  // Deselect after shake
   setTimeout(() => {
     selectedWords = [];
-    renderGrid();
+    const allTiles = gridEl.querySelectorAll('.word-tile');
+    allTiles.forEach(tile => tile.classList.remove('selected', 'shake'));
     updateButtons();
     isAnimating = false;
 
@@ -198,9 +206,9 @@ function animateWrongGuess() {
           endMessage.textContent = 'Better luck next time!';
           showEndModal();
         });
-      }, 300);
+      }, 400);
     }
-  }, 600);
+  }, 500);
 }
 
 function revealRemaining(onComplete) {
@@ -212,13 +220,13 @@ function revealRemaining(onComplete) {
       solvedGroups.push(group);
       remainingWords = remainingWords.filter(w => !group.words.includes(w));
       selectedWords = [];
-      renderSolved();
+      renderSolved(true);
       renderGrid();
     }, delay);
-    delay += 700;
+    delay += 550;
   });
 
-  setTimeout(onComplete, delay + 400);
+  setTimeout(onComplete, delay + 350);
 }
 
 // ─── Rendering ───────────────────────────────────────────────────────────────
@@ -239,14 +247,16 @@ function renderGrid() {
   });
 }
 
-function renderSolved() {
+function renderSolved(animateLatest = false) {
   solvedEl.innerHTML = '';
-
   const sorted = [...solvedGroups].sort((a, b) => a.difficulty - b.difficulty);
 
-  sorted.forEach(group => {
+  sorted.forEach((group, i) => {
     const bar = document.createElement('div');
     bar.className = `solved-group diff-${group.difficulty}`;
+    if (animateLatest && i === sorted.length - 1) {
+      bar.classList.add('reveal');
+    }
 
     const catEl = document.createElement('div');
     catEl.className = 'group-category';
