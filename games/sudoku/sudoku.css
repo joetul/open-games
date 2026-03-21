@@ -43,13 +43,17 @@
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   gap: 1px;
-  background-color: var(--fg-secondary);
+  background-color: var(--bg-primary);
   border: 2px solid var(--fg-primary);
   border-radius: 4px;
   width: min(680px, 100%);
   margin: 0 auto;
   aspect-ratio: 1;
   overflow: hidden;
+}
+
+.sudoku-grid.loaded {
+  background-color: var(--fg-secondary);
 }
 
 .cell {

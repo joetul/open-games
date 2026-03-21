@@ -405,6 +405,7 @@ async function newGame() {
     );
     markPlayed(puzzleData.id);
     renderGrid();
+    gridEl.classList.add('loaded');
   } catch (err) {
     console.error('Error loading puzzle:', err);
   }
