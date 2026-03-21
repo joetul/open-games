@@ -502,9 +502,6 @@ function moveToPrevInWord() {
 }
 
 function moveSelection(dr, dc) {
-  // Switch direction to match arrow key
-  if (dc !== 0) direction = 'across';
-  if (dr !== 0) direction = 'down';
 
   let r = selectedCell.row + dr;
   let c = selectedCell.col + dc;
