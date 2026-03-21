@@ -17,36 +17,34 @@ export function markPlayed(id) {
   saveToStorage(PLAYED_KEY, arr);
 }
 
+/** Map difficulty to pack number ranges */
+const DIFFICULTY_PACKS = {
+  easy:   { start: 1, end: 5 },
+  medium: { start: 6, end: 10 },
+  hard:   { start: 11, end: 15 },
+  expert: { start: 16, end: 20 },
+};
+
 /** Load a random puzzle for the given difficulty, avoiding recently played ones */
 export async function getRandomPuzzle(difficulty, excludeId) {
-  // Try up to 3 random packs to find puzzles matching difficulty
   const played = getPlayedIds();
+  const range = DIFFICULTY_PACKS[difficulty];
 
-  for (let attempt = 0; attempt < 5; attempt++) {
-    const packNum = Math.floor(Math.random() * TOTAL_PACKS) + 1;
-    const pad = String(packNum).padStart(3, '0');
-    const { PUZZLES } = await import(`./puzzles/pack-${pad}.js`);
+  // Pick a random pack within the correct difficulty range
+  const packNum = range.start + Math.floor(Math.random() * (range.end - range.start + 1));
+  const pad = String(packNum).padStart(3, '0');
+  const { PUZZLES } = await import(`./puzzles/pack-${pad}.js`);
 
-    // Filter by difficulty
-    const matching = PUZZLES.filter(p => p.difficulty === difficulty);
-    if (matching.length === 0) continue;
-
-    // Prefer unplayed
-    let candidates = matching.filter(p => p.id !== excludeId && !played.has(p.id));
-    if (candidates.length === 0) {
-      candidates = matching.filter(p => p.id !== excludeId);
-    }
-    if (candidates.length === 0) {
-      candidates = matching;
-    }
-
-    return candidates[Math.floor(Math.random() * candidates.length)];
+  // Prefer unplayed, then non-excluded, then any
+  let candidates = PUZZLES.filter(p => p.id !== excludeId && !played.has(p.id));
+  if (candidates.length === 0) {
+    candidates = PUZZLES.filter(p => p.id !== excludeId);
+  }
+  if (candidates.length === 0) {
+    candidates = PUZZLES;
   }
 
-  // Fallback: load pack 1 and find any matching puzzle
-  const { PUZZLES } = await import('./puzzles/pack-001.js');
-  const matching = PUZZLES.filter(p => p.difficulty === difficulty);
-  return matching[Math.floor(Math.random() * matching.length)];
+  return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
 /** Load a specific puzzle by ID */

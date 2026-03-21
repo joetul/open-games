@@ -67,6 +67,8 @@
   position: relative;
   transition: background-color 0.15s;
   user-select: none;
+  min-height: 0;
+  aspect-ratio: 1;
 }
 
 /* Box borders — thicker lines every 3 cells */
@@ -111,7 +113,9 @@
 }
 
 [data-theme="light"] .cell.same-number {
-  background-color: rgba(124, 77, 255, 0.12);
+  background-color: rgba(124, 77, 255, 0.28);
+  color: #3a1a9e;
+  font-weight: 800;
 }
 
 /* Error state */

@@ -4,6 +4,7 @@ import { getRandomPuzzle, markPlayed } from './puzzle-loader.js';
 // ─── State ───────────────────────────────────────────────────────────────────
 
 let currentPuzzleId = null;
+let lastPuzzleByDifficulty = {};
 let solution = [];    // 9x9 solved grid
 let puzzle = [];      // 9x9 puzzle (0 = empty)
 let board = [];       // 9x9 current player state
@@ -17,6 +18,7 @@ let timerInterval = null;
 let timerPaused = false;
 let gameWon = false;
 let errorsShown = true;
+let loadId = 0;
 
 // ─── DOM References ──────────────────────────────────────────────────────────
 
@@ -378,12 +380,16 @@ function resumeGame() {
 // ─── New Game ────────────────────────────────────────────────────────────────
 
 async function newGame() {
+  const thisLoad = ++loadId;
+
   // Reset state
   gameWon = false;
   errorsShown = true;
   checkBtn.classList.add('active');
   selectedCell = null;
   undoStack = [];
+  pencilMode = false;
+  pencilBtn.classList.remove('active');
   stopTimer();
   timerSeconds = 0;
   timerPaused = false;
@@ -395,8 +401,12 @@ async function newGame() {
 
   // Load puzzle from pack
   try {
-    const puzzleData = await getRandomPuzzle(difficulty, currentPuzzleId);
+    const excludeId = lastPuzzleByDifficulty[difficulty] ?? null;
+    const puzzleData = await getRandomPuzzle(difficulty, excludeId);
+    // If another newGame() was called while we were loading, discard this result
+    if (thisLoad !== loadId) return;
     currentPuzzleId = puzzleData.id;
+    lastPuzzleByDifficulty[difficulty] = puzzleData.id;
     solution = puzzleData.solution;
     puzzle = puzzleData.puzzle;
     board = puzzle.map(row => [...row]);
@@ -414,7 +424,7 @@ async function newGame() {
 // ─── Keyboard Input ──────────────────────────────────────────────────────────
 
 document.addEventListener('keydown', (e) => {
-  if (gameWon) return;
+  if (gameWon || timerPaused) return;
 
   // Number keys
   if (e.key >= '1' && e.key <= '9') {
@@ -474,7 +484,6 @@ pauseResume.addEventListener('click', resumeGame);
 // Difficulty buttons
 document.querySelectorAll('.difficulty-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    if (btn.dataset.difficulty === difficulty) return;
     document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     difficulty = btn.dataset.difficulty;
@@ -492,6 +501,9 @@ document.querySelectorAll('.numpad-btn').forEach(btn => {
 // Close modal on overlay click
 winModal.addEventListener('click', (e) => {
   if (e.target === winModal) winModal.classList.remove('active');
+});
+pauseModal.addEventListener('click', (e) => {
+  if (e.target === pauseModal) resumeGame();
 });
 
 // ─── Init ────────────────────────────────────────────────────────────────────
