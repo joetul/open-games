@@ -1,7 +1,9 @@
-import { formatTime, shuffleArray } from '../../shared/js/utils.js';
+import { formatTime } from '../../shared/js/utils.js';
+import { getRandomPuzzle, markPlayed } from './puzzle-loader.js';
 
 // ─── State ───────────────────────────────────────────────────────────────────
 
+let currentPuzzleId = null;
 let solution = [];    // 9x9 solved grid
 let puzzle = [];      // 9x9 puzzle (0 = empty)
 let board = [];       // 9x9 current player state
@@ -15,123 +17,6 @@ let timerInterval = null;
 let timerPaused = false;
 let gameWon = false;
 let errorsShown = true;
-
-// ─── Sudoku Generator ────────────────────────────────────────────────────────
-
-/** Check if placing num at (row, col) is valid in the grid */
-function isValid(grid, row, col, num) {
-  for (let i = 0; i < 9; i++) {
-    if (grid[row][i] === num) return false;
-    if (grid[i][col] === num) return false;
-  }
-  const boxRow = Math.floor(row / 3) * 3;
-  const boxCol = Math.floor(col / 3) * 3;
-  for (let r = boxRow; r < boxRow + 3; r++) {
-    for (let c = boxCol; c < boxCol + 3; c++) {
-      if (grid[r][c] === num) return false;
-    }
-  }
-  return true;
-}
-
-/** Fill a 9x9 grid using backtracking with randomized digit order */
-function generateSolvedGrid() {
-  const grid = Array.from({ length: 9 }, () => Array(9).fill(0));
-
-  function fill(pos) {
-    if (pos === 81) return true;
-    const row = Math.floor(pos / 9);
-    const col = pos % 9;
-
-    const digits = shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    for (const num of digits) {
-      if (isValid(grid, row, col, num)) {
-        grid[row][col] = num;
-        if (fill(pos + 1)) return true;
-        grid[row][col] = 0;
-      }
-    }
-    return false;
-  }
-
-  fill(0);
-  return grid;
-}
-
-/** Count solutions (stops at 2 — we only need to know if there's exactly 1) */
-function countSolutions(grid, limit = 2) {
-  let count = 0;
-
-  function solve(pos) {
-    if (count >= limit) return;
-    if (pos === 81) { count++; return; }
-    const row = Math.floor(pos / 9);
-    const col = pos % 9;
-
-    if (grid[row][col] !== 0) {
-      solve(pos + 1);
-      return;
-    }
-
-    for (let num = 1; num <= 9; num++) {
-      if (isValid(grid, row, col, num)) {
-        grid[row][col] = num;
-        solve(pos + 1);
-        grid[row][col] = 0;
-      }
-    }
-  }
-
-  solve(0);
-  return count;
-}
-
-/** Create a puzzle by removing cells from a solved grid */
-function createPuzzle(solvedGrid, diff) {
-  const cellsToRemove = {
-    easy: 32,
-    medium: 42,
-    hard: 52,
-    expert: 58,
-  };
-  const target = cellsToRemove[diff] || 32;
-
-  // Deep copy
-  const grid = solvedGrid.map(row => [...row]);
-
-  // Build list of all positions, shuffled
-  const positions = shuffleArray(
-    Array.from({ length: 81 }, (_, i) => [Math.floor(i / 9), i % 9])
-  );
-
-  let removed = 0;
-  for (const [row, col] of positions) {
-    if (removed >= target) break;
-
-    const mirrorRow = 8 - row;
-    const mirrorCol = 8 - col;
-
-    // Skip if already removed
-    if (grid[row][col] === 0) continue;
-
-    const val1 = grid[row][col];
-    const val2 = grid[mirrorRow][mirrorCol];
-
-    grid[row][col] = 0;
-    grid[mirrorRow][mirrorCol] = 0;
-
-    // Check unique solution
-    if (countSolutions(grid.map(r => [...r])) !== 1) {
-      grid[row][col] = val1;
-      grid[mirrorRow][mirrorCol] = val2;
-      continue;
-    }
-
-    removed += (row === mirrorRow && col === mirrorCol) ? 1 : 2;
-  }
-
-  return grid;
-}
 
 // ─── DOM References ──────────────────────────────────────────────────────────
 
@@ -492,7 +377,7 @@ function resumeGame() {
 
 // ─── New Game ────────────────────────────────────────────────────────────────
 
-function newGame() {
+async function newGame() {
   // Reset state
   gameWon = false;
   errorsShown = true;
@@ -508,13 +393,16 @@ function newGame() {
   winModal.classList.remove('active');
   pauseModal.classList.remove('active');
 
-  // Generate
-  solution = generateSolvedGrid();
-  puzzle = createPuzzle(solution, difficulty);
+  // Load puzzle from pack
+  const puzzleData = await getRandomPuzzle(difficulty, currentPuzzleId);
+  currentPuzzleId = puzzleData.id;
+  solution = puzzleData.solution;
+  puzzle = puzzleData.puzzle;
   board = puzzle.map(row => [...row]);
   pencilMarks = Array.from({ length: 9 }, () =>
     Array.from({ length: 9 }, () => new Set())
   );
+  markPlayed(puzzleData.id);
 
   renderGrid();
 }
