@@ -133,7 +133,7 @@ function animateCorrectGuess(group) {
     remainingWords = remainingWords.filter(w => !selectedSet.has(w));
     selectedWords = [];
 
-    renderSolved(true);
+    renderSolved(group);
     renderGrid();
     updateButtons();
     isAnimating = false;
@@ -202,7 +202,7 @@ function revealRemaining(onComplete) {
       solvedGroups.push(group);
       remainingWords = remainingWords.filter(w => !group.words.includes(w));
       selectedWords = [];
-      renderSolved(true);
+      renderSolved(group);
       renderGrid();
     }, delay);
     delay += 550;
@@ -229,14 +229,14 @@ function renderGrid() {
   });
 }
 
-function renderSolved(animateLatest = false) {
+function renderSolved(latestGroup = null) {
   solvedEl.innerHTML = '';
   const sorted = [...solvedGroups].sort((a, b) => a.difficulty - b.difficulty);
 
-  sorted.forEach((group, i) => {
+  sorted.forEach((group) => {
     const bar = document.createElement('div');
     bar.className = `solved-group diff-${group.difficulty}`;
-    if (animateLatest && i === sorted.length - 1) {
+    if (latestGroup && group === latestGroup) {
       bar.classList.add('reveal');
     }
 

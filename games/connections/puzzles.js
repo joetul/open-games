@@ -177,7 +177,7 @@ export const PUZZLES = [
   },
   {
     groups: [
-      { category: "Planets", difficulty: 0, words: ["EARTH", "MERCURY", "URANUS", "PLUTO"] },
+      { category: "Planets", difficulty: 0, words: ["EARTH", "MERCURY", "URANUS", "NEPTUNE"] },
       { category: "Greek letters", difficulty: 1, words: ["ALPHA", "BETA", "DELTA", "OMEGA"] },
       { category: "Things that are sharp", difficulty: 2, words: ["KNIFE", "TACK", "WIT", "CHEDDAR"] },
       { category: "___ work", difficulty: 3, words: ["NET", "FRAME", "TEAM", "DREAM"] }
@@ -395,7 +395,7 @@ export const PUZZLES = [
   {
     groups: [
       { category: "Things that can be drawn", difficulty: 0, words: ["BATH", "CURTAIN", "SWORD", "CONCLUSION"] },
-      { category: "Words before 'room'", difficulty: 1, words: ["BALL", "SHOW", "BATH", "CLASS"] },
+      { category: "Words before 'room'", difficulty: 1, words: ["BALL", "SHOW", "BED", "CLASS"] },
       { category: "Types of drive", difficulty: 2, words: ["HARD", "TEST", "FLASH", "LINE"] },
       { category: "Famous ___ Johns", difficulty: 3, words: ["ELTON", "PAPA", "DEAR", "LONG"] }
     ]
@@ -693,7 +693,7 @@ export const PUZZLES = [
   {
     groups: [
       { category: "Things in a harbor", difficulty: 0, words: ["DOCK", "BUOY", "ANCHOR", "CRANE"] },
-      { category: "Words before 'count'", difficulty: 1, words: ["HEAD", "BODY", "DISCOUNT", "RECOUNT"] },
+      { category: "Words before 'count'", difficulty: 1, words: ["HEAD", "BODY", "DOWN", "BLOOD"] },
       { category: "Double meanings in sports", difficulty: 2, words: ["MATCH", "SET", "STRIKE", "FRAME"] },
       { category: "Ends with a musical note", difficulty: 3, words: ["TIRADE", "PLACEBO", "MOREL", "SALAMI"] }
     ]
@@ -790,7 +790,7 @@ export const PUZZLES = [
     groups: [
       { category: "Things that are flat", difficulty: 0, words: ["PANCAKE", "TIRE", "SCREEN", "EARTH"] },
       { category: "Words after 'high'", difficulty: 1, words: ["LIGHT", "JACK", "BALL", "CHAIR"] },
-      { category: "Things with a pilot", difficulty: 2, words: ["PLANE", "SHOW", "FLAME", "LIGHT"] },
+      { category: "Things with a pilot", difficulty: 2, words: ["PLANE", "SHOW", "FLAME", "STOVE"] },
       { category: "Contain a season", difficulty: 3, words: ["WINTERY", "OFFSPRING", "AUTISM", "RAINFALL"] }
     ]
   },

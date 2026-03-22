@@ -1,11 +1,13 @@
-import { shuffleArray } from '../../shared/js/utils.js';
-import { ANSWERS } from './answers.js';
+import { ANSWERS as RAW_ANSWERS } from './answers.js';
 import { VALID_GUESSES } from './valid.js';
 
 // ─── State ───────────────────────────────────────────────────────────────────
 
 const MAX_GUESSES = 6;
 const WORD_LENGTH = 5;
+
+// Filter out censored placeholder entries (e.g. "*****")
+const ANSWERS = RAW_ANSWERS.filter(w => /^[a-z]+$/.test(w));
 
 let targetWord = '';
 let guesses = [];       // submitted guesses
@@ -145,7 +147,7 @@ function submitGuess() {
   });
 
   currentGuess = '';
-  currentRow++;
+  if (currentRow < MAX_GUESSES - 1) currentRow++;
 }
 
 function evaluateGuess(guess) {
@@ -181,7 +183,9 @@ function evaluateGuess(guess) {
 function revealRow(rowIdx, guess, states, onComplete) {
   const row = boardEl.querySelector(`[data-row="${rowIdx}"]`);
   const tiles = row.querySelectorAll('.tile');
-  const STAGGER = 500; // delay between each tile
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STAGGER = reducedMotion ? 60 : 500;
+  const FLIP_DUR = reducedMotion ? 0 : 300;
 
   tiles.forEach((tile, i) => {
     const delay = i * STAGGER;
@@ -195,13 +199,12 @@ function revealRow(rowIdx, guess, states, onComplete) {
         tile.classList.add(states[i]);
         tile.classList.remove('filled', 'flip-out');
         tile.classList.add('flip-in');
-      }, 300);
+      }, FLIP_DUR);
     }, delay);
   });
 
   // Call onComplete after all tiles done
-  // Each tile: delay + 300ms out + 300ms in
-  const totalTime = (WORD_LENGTH - 1) * STAGGER + 600 + 100;
+  const totalTime = (WORD_LENGTH - 1) * STAGGER + FLIP_DUR * 2 + 100;
   setTimeout(onComplete, totalTime);
 }
 
@@ -282,9 +285,12 @@ keyboardEl.addEventListener('click', (e) => {
 // New game buttons
 endNewGame.addEventListener('click', newGame);
 
-// Close modal on overlay click
+// Close modal on overlay click — start a new game so user isn't stuck
 endModal.addEventListener('click', (e) => {
-  if (e.target === endModal) endModal.classList.remove('active');
+  if (e.target === endModal) {
+    endModal.classList.remove('active');
+    newGame();
+  }
 });
 
 // ─── Init ────────────────────────────────────────────────────────────────────

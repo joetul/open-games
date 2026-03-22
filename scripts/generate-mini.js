@@ -148,10 +148,12 @@ function generateGrid() {
 
 function fillGrid(rows, rowIdx) {
   if (rowIdx === 5) {
-    // Verify all columns are valid words
+    // Verify all columns are valid words and not duplicates of row words
+    const usedWords = new Set(rows);
     for (let c = 0; c < 5; c++) {
       const col = rows[0][c] + rows[1][c] + rows[2][c] + rows[3][c] + rows[4][c];
-      if (!wordSet.has(col)) return false;
+      if (!wordSet.has(col) || usedWords.has(col)) return false;
+      usedWords.add(col);
     }
     return true;
   }
@@ -166,9 +168,11 @@ function fillGrid(rows, rowIdx) {
     colPrefixes.push(prefix);
   }
 
-  // Find candidate words: each letter must extend a valid column prefix
+  // Find candidate words: each letter must extend a valid column prefix, and not already used as a row
+  const usedRows = new Set(rows);
   const candidates = [];
   for (const word of wordList) {
+    if (usedRows.has(word)) continue;
     let valid = true;
     for (let c = 0; c < 5; c++) {
       if (!hasPrefix(colPrefixes[c] + word[c])) {

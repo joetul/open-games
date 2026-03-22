@@ -284,7 +284,7 @@ def load_patterns(data_dir: Path) -> list[tuple[str, ...]]:
     valid = []
     for p in patterns:
         lengths = get_slot_lengths(p)
-        if all(len(words_by_len.get(l, [])) >= 5 for l in lengths):
+        if lengths and all(len(words_by_len.get(l, [])) >= 5 for l in lengths):
             min_pool = min(len(words_by_len[l]) for l in lengths)
             valid.append((min_pool, p))
 

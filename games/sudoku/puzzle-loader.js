@@ -29,30 +29,43 @@ const DIFFICULTY_PACKS = {
 export async function getRandomPuzzle(difficulty, excludeId) {
   const played = getPlayedIds();
   const range = DIFFICULTY_PACKS[difficulty];
+  const rangeSize = range.end - range.start + 1;
 
-  // Pick a random pack within the correct difficulty range
-  const packNum = range.start + Math.floor(Math.random() * (range.end - range.start + 1));
-  const pad = String(packNum).padStart(3, '0');
-  const { PUZZLES } = await import(`./puzzles/pack-${pad}.js`);
+  // Try multiple random packs within the difficulty range to find an unplayed puzzle
+  const tried = new Set();
+  for (let attempt = 0; attempt < 3 && tried.size < rangeSize; attempt++) {
+    let packNum;
+    do { packNum = range.start + Math.floor(Math.random() * rangeSize); } while (tried.has(packNum));
+    tried.add(packNum);
 
-  // Prefer unplayed, then non-excluded, then any
-  let candidates = PUZZLES.filter(p => p.id !== excludeId && !played.has(p.id));
-  if (candidates.length === 0) {
-    candidates = PUZZLES.filter(p => p.id !== excludeId);
+    const pad = String(packNum).padStart(3, '0');
+    const { PUZZLES } = await import(`./puzzles/pack-${pad}.js`);
+
+    const candidates = PUZZLES.filter(p => p.id !== excludeId && !played.has(p.id));
+    if (candidates.length > 0) {
+      return candidates[Math.floor(Math.random() * candidates.length)];
+    }
   }
-  if (candidates.length === 0) {
-    candidates = PUZZLES;
-  }
 
+  // Fallback: pick any non-excluded puzzle from the last tried pack
+  const fallbackPad = String([...tried][tried.size - 1]).padStart(3, '0');
+  const { PUZZLES } = await import(`./puzzles/pack-${fallbackPad}.js`);
+  let candidates = PUZZLES.filter(p => p.id !== excludeId);
+  if (candidates.length === 0) candidates = PUZZLES;
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
 /** Load a specific puzzle by ID */
 export async function getPuzzleById(id) {
   const packIndex = Math.ceil(id / PACK_SIZE);
-  const pad = String(packIndex).padStart(3, '0');
-  const { PUZZLES } = await import(`./puzzles/pack-${pad}.js`);
-  return PUZZLES.find(p => p.id === id) || null;
+  if (packIndex < 1 || packIndex > TOTAL_PACKS) return null;
+  try {
+    const pad = String(packIndex).padStart(3, '0');
+    const { PUZZLES } = await import(`./puzzles/pack-${pad}.js`);
+    return PUZZLES.find(p => p.id === id) || null;
+  } catch {
+    return null;
+  }
 }
 
 export { TOTAL_PUZZLES, PUZZLES_PER_DIFFICULTY };

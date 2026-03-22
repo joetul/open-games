@@ -90,7 +90,11 @@ function loadPuzzle(puzzle) {
 
   // Try to restore progress
   const saved = loadFromStorage(`crossword-progress-${puzzle.id}`);
-  if (saved) {
+  const validSave = saved
+    && Array.isArray(saved.playerGrid)
+    && saved.playerGrid.length === gridSize
+    && saved.playerGrid.every(row => Array.isArray(row) && row.length === gridSize);
+  if (validSave) {
     playerGrid = saved.playerGrid;
     revealedCells = saved.revealedCells || revealedCells;
     timerSeconds = saved.timerSeconds || 0;
@@ -244,16 +248,13 @@ function onCellClick(r, c) {
 }
 
 function selectClue(clue) {
-  const dir = clue === activeClue && direction === (currentPuzzle.clues.across.includes(clue) ? 'across' : 'down')
-    ? direction : (currentPuzzle.clues.across.includes(clue) ? 'across' : 'down');
-
-  direction = dir;
+  direction = currentPuzzle.clues.across.includes(clue) ? 'across' : 'down';
 
   // Find first empty cell in word, or first cell if all filled
   let target = null;
   for (let i = 0; i < clue.length; i++) {
-    const r = dir === 'across' ? clue.row : clue.row + i;
-    const c = dir === 'across' ? clue.col + i : clue.col;
+    const r = direction === 'across' ? clue.row : clue.row + i;
+    const c = direction === 'across' ? clue.col + i : clue.col;
     if (playerGrid[r][c] === '') {
       target = { row: r, col: c };
       break;
@@ -581,6 +582,7 @@ function toggleDirection() {
 function checkPuzzle() {
   if (gameWon) return;
   let errors = 0;
+  let filled = 0;
 
   for (let r = 0; r < gridSize; r++) {
     for (let c = 0; c < gridSize; c++) {
@@ -592,6 +594,7 @@ function checkPuzzle() {
       cell.classList.remove('error', 'correct');
 
       if (playerGrid[r][c] === '') continue;
+      filled++;
 
       if (playerGrid[r][c] === solutionGrid[r][c]) {
         cell.classList.add('correct');
@@ -602,7 +605,9 @@ function checkPuzzle() {
     }
   }
 
-  if (errors === 0) {
+  if (filled === 0) {
+    showToast('Fill in some letters first');
+  } else if (errors === 0) {
     showToast('No errors found!');
   } else {
     showToast(`${errors} error${errors > 1 ? 's' : ''} found`);
@@ -669,7 +674,7 @@ function onWin() {
   stopTimer();
 
   // Clear saved progress
-  localStorage.removeItem(`crossword-progress-${currentPuzzle.id}`);
+  try { localStorage.removeItem(`crossword-progress-${currentPuzzle.id}`); } catch { /* storage unavailable */ }
 
   const msg = document.getElementById('win-message');
   msg.textContent = `You solved it in ${formatTime(timerSeconds)}!`;

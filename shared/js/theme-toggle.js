@@ -6,14 +6,16 @@
 const STORAGE_KEY = 'theme';
 
 function getPreferredTheme() {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored) return stored;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) return stored;
+  } catch { /* localStorage unavailable */ }
   return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 }
 
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem(STORAGE_KEY, theme);
+  try { localStorage.setItem(STORAGE_KEY, theme); } catch { /* storage unavailable */ }
   updateToggleIcon(theme);
 }
 
@@ -47,8 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Close buttons on modals
   document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal-close')) {
-      e.target.closest('.modal-overlay').classList.remove('active');
+    const closeBtn = e.target.closest('.modal-close');
+    if (closeBtn) {
+      const overlay = closeBtn.closest('.modal-overlay');
+      if (overlay) overlay.classList.remove('active');
     }
   });
 });
