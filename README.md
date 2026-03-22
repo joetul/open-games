@@ -31,16 +31,29 @@ python3 -m http.server
 Then open [http://localhost:8000](http://localhost:8000) in your browser.
 
 
-## Data Sources
+## Data Sources & Acknowledgments
 
-| Game | Source |
-|------|--------|
-| **Sudoku** | 2,000 puzzles from the [Sudoku Exchange Puzzle Bank](https://github.com/grantm/sudoku-exchange-puzzle-bank) (Public Domain) — difficulty rated by [Sukaku Explainer](https://github.com/SudokuMonster/SukakuExplainer) based on solving techniques required. |
-| **Word Guess** | Word lists from [lynn/hello-wordl](https://github.com/lynn/hello-wordl) (MIT) — answers curated from Peter Norvig's word frequency list, valid guesses from the Scrabble tournament word list. |
-| **Connections** | Puzzles are AI-generated. |
-| **Crossword** | 3,000 puzzles converted from the [XD Puzzles](https://xd.saul.pw/) dataset — pre-1965 NY Times crosswords (public domain). |
-| **Mini Crossword** | 3,000 puzzles generated using a backtracking grid builder with words from the [MsFit Crossword Dataset](https://github.com/nzfeng/crossword-dataset) (GPL-3.0) and clues from the [xd-clues](https://xd.saul.pw/data/) dataset (6M+ clue-answer pairs from published crosswords). |
+This project would not be possible without the following open datasets and tools. Thank you to all the creators and maintainers.
+
+### Sudoku
+- **[Sudoku Exchange Puzzle Bank](https://github.com/grantm/sudoku-exchange-puzzle-bank)** (Public Domain) — 2,000 puzzles across 4 difficulty levels.
+- **[Sukaku Explainer](https://github.com/SudokuMonster/SukakuExplainer)** — Used for technique-based difficulty rating.
+
+### Word Guess
+- **[lynn/hello-wordl](https://github.com/lynn/hello-wordl)** (MIT) — Answer words curated from Peter Norvig's word frequency list, valid guesses from the Scrabble tournament word list.
+
+### Connections
+- Puzzles are AI-generated.
+
+### Crossword & Mini Crossword
+- **[MsFit Crossword Dataset](https://github.com/nzfeng/crossword-dataset)** (GPL-3.0) — Word lists used for grid generation. The generated puzzle data in this project incorporates words from this GPL-3.0 licensed dataset.
+- **[XD Puzzles](https://xd.saul.pw/)** (Public Domain) — Grid patterns (black/white cell layouts) sourced from pre-1965 crosswords.
+- **[xd-clues](https://xd.saul.pw/data/)** — 6M+ clue-answer pairs from published crosswords, used to match clues to generated grids.
+
+Crossword puzzles (3,000) are generated using a constraint-satisfaction solver. Mini crossword puzzles (3,000) are generated using a backtracking grid builder. Both use the sources listed above.
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
+
+The crossword and mini crossword puzzle generation scripts use word data from the [MsFit Crossword Dataset](https://github.com/nzfeng/crossword-dataset), which is licensed under GPL-3.0. See their repository for full license terms.
