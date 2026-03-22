@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crossword - Open Games</title>
+  <script>try{var t=localStorage.getItem('theme');document.documentElement.setAttribute('data-theme',t||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'))}catch(e){document.documentElement.setAttribute('data-theme','dark')}</script>
   <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../../shared/css/reset.css">
   <link rel="stylesheet" href="../../shared/css/theme.css">
   <link rel="stylesheet" href="../../shared/css/common.css">
   <link rel="stylesheet" href="crossword.css">
   <script src="../../shared/js/theme-toggle.js" defer></script>
+  <script src="../../shared/js/modal.js" defer></script>
 </head>
 <body>
   <div class="page">
@@ -76,9 +78,20 @@
         <button class="btn btn-secondary" id="clear-btn">Clear</button>
       </div>
 
+      <!-- Confirm clear modal -->
+      <div class="modal-overlay" id="clear-modal">
+        <div class="modal" role="dialog" aria-modal="true" aria-label="Confirm clear">
+          <p>Clear all non-revealed cells?</p>
+          <div style="display: flex; gap: 0.75rem; justify-content: center;">
+            <button class="btn btn-secondary" id="clear-cancel">Cancel</button>
+            <button class="btn btn-primary" id="clear-confirm">Clear</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Pause modal -->
       <div class="modal-overlay" id="pause-modal">
-        <div class="modal">
+        <div class="modal" role="dialog" aria-modal="true" aria-label="Game paused">
           <h2>Paused</h2>
           <button class="btn btn-primary" id="resume-btn">Resume</button>
         </div>
@@ -86,7 +99,7 @@
 
       <!-- Win modal -->
       <div class="modal-overlay" id="win-modal">
-        <div class="modal">
+        <div class="modal" role="dialog" aria-modal="true" aria-label="Puzzle complete">
           <button class="modal-close" aria-label="Close">&times;</button>
           <h2>Congratulations!</h2>
           <p id="win-message"></p>

@@ -17,12 +17,12 @@
  *   games/sudoku/puzzles/index.js
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, unlinkSync } from 'fs';
 import { resolve } from 'path';
 
 const bankDir = process.argv[2];
-const PER_DIFFICULTY = parseInt(process.argv[3]) || 500;
-const PACK_SIZE = parseInt(process.argv[4]) || 100;
+const PER_DIFFICULTY = parseInt(process.argv[3], 10) || 500;
+const PACK_SIZE = parseInt(process.argv[4], 10) || 100;
 
 if (!bankDir) {
   console.error('Usage: node scripts/convert-sudoku.js <puzzle-bank-dir> [puzzles-per-difficulty] [pack-size]');
@@ -85,7 +85,7 @@ function parseGrid(digits) {
   for (let r = 0; r < 9; r++) {
     const row = [];
     for (let c = 0; c < 9; c++) {
-      row.push(parseInt(digits[r * 9 + c]));
+      row.push(parseInt(digits[r * 9 + c], 10));
     }
     grid.push(row);
   }
@@ -118,7 +118,7 @@ for (const [filename, diff] of Object.entries(DIFFICULTY_MAP)) {
 
     const digits = parts[1];
     const rating = parseFloat(parts[2]);
-    if (digits.length !== 81) continue;
+    if (digits.length !== 81 || !/^[0-9]+$/.test(digits)) continue;
 
     const puzzleGrid = parseGrid(digits);
     const solutionGrid = solve(puzzleGrid);
@@ -165,6 +165,17 @@ for (let p = 0; p < totalPacks; p++) {
   const js = `export const PUZZLES = ${JSON.stringify(pack)};\n`;
   writeFileSync(`${outDir}/pack-${padded}.js`, js);
   console.log(`  pack-${padded}.js: ${pack.length} puzzles`);
+}
+
+// Remove stale pack files from previous runs
+for (const file of readdirSync(outDir)) {
+  if (/^pack-\d+\.js$/.test(file)) {
+    const num = parseInt(file.match(/\d+/)[0], 10);
+    if (num > totalPacks) {
+      unlinkSync(`${outDir}/${file}`);
+      console.log(`  Removed stale ${file}`);
+    }
+  }
 }
 
 // Write index

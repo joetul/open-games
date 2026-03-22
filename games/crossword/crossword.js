@@ -146,8 +146,11 @@ function renderGrid() {
       cell.dataset.row = r;
       cell.dataset.col = c;
 
+      cell.setAttribute('role', 'gridcell');
+
       if (solutionGrid[r][c] === '#') {
         cell.classList.add('black');
+        cell.setAttribute('aria-hidden', 'true');
       } else {
         // Number
         const num = numberMap[`${r},${c}`];
@@ -163,6 +166,9 @@ function renderGrid() {
         letterSpan.className = 'cell-letter';
         letterSpan.textContent = playerGrid[r][c];
         cell.appendChild(letterSpan);
+
+        const letter = playerGrid[r][c] || 'empty';
+        cell.setAttribute('aria-label', `Row ${r + 1}, Column ${c + 1}, ${letter}`);
 
         if (revealedCells[r][c]) cell.classList.add('revealed');
 
@@ -336,6 +342,16 @@ function updateHighlights() {
 // ─── Keyboard Input ─────────────────────────────────────────────────────────
 
 function handleKeydown(e) {
+  // Escape closes any active modal
+  if (e.key === 'Escape') {
+    const pauseModalEl = document.getElementById('pause-modal');
+    const winModalEl = document.getElementById('win-modal');
+    const clearModalEl = document.getElementById('clear-modal');
+    if (pauseModalEl.classList.contains('active')) { resumeGame(); return; }
+    if (winModalEl.classList.contains('active')) { winModalEl.classList.remove('active'); return; }
+    if (clearModalEl.classList.contains('active')) { clearModalEl.classList.remove('active'); return; }
+  }
+
   if (gameWon || timerPaused || !selectedCell) return;
 
   const key = e.key;
@@ -639,8 +655,12 @@ function revealWord() {
 
 function clearGrid() {
   if (gameWon) return;
-  if (!confirm('Clear all non-revealed cells?')) return;
+  const modal = document.getElementById('clear-modal');
+  modal.classList.add('active');
+  document.getElementById('clear-cancel').focus();
+}
 
+function doClearGrid() {
   for (let r = 0; r < gridSize; r++) {
     for (let c = 0; c < gridSize; c++) {
       if (solutionGrid[r][c] === '#') continue;
@@ -681,6 +701,7 @@ function onWin() {
 
   const modal = document.getElementById('win-modal');
   modal.classList.add('active');
+  document.getElementById('win-new-game').focus();
 }
 
 // ─── Timer ──────────────────────────────────────────────────────────────────
@@ -708,7 +729,9 @@ function pauseGame() {
   timerEl.classList.add('paused');
   pauseIcon.style.display = 'none';
   playIcon.style.display = '';
+  document.getElementById('timer-pause').setAttribute('aria-label', 'Resume timer');
   document.getElementById('pause-modal').classList.add('active');
+  document.getElementById('resume-btn').focus();
 }
 
 function resumeGame() {
@@ -716,6 +739,7 @@ function resumeGame() {
   timerEl.classList.remove('paused');
   pauseIcon.style.display = '';
   playIcon.style.display = 'none';
+  document.getElementById('timer-pause').setAttribute('aria-label', 'Pause timer');
   document.getElementById('pause-modal').classList.remove('active');
 }
 
@@ -800,6 +824,13 @@ async function init() {
   document.getElementById('check-btn').addEventListener('click', checkPuzzle);
   document.getElementById('reveal-word-btn').addEventListener('click', revealWord);
   document.getElementById('clear-btn').addEventListener('click', clearGrid);
+  document.getElementById('clear-confirm').addEventListener('click', () => {
+    document.getElementById('clear-modal').classList.remove('active');
+    doClearGrid();
+  });
+  document.getElementById('clear-cancel').addEventListener('click', () => {
+    document.getElementById('clear-modal').classList.remove('active');
+  });
   document.getElementById('win-new-game').addEventListener('click', () => {
     document.getElementById('win-modal').classList.remove('active');
     newPuzzle();

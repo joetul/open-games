@@ -541,7 +541,9 @@ def _worker_init(data_dir_str: str, max_bt: int):
 def _worker_solve(pattern: tuple[str, ...]) -> dict | None:
     try:
         return solve_one(pattern, _worker_max_backtracks)
-    except Exception:
+    except Exception as exc:
+        import traceback
+        sys.__stderr__.write(f"Worker error: {exc}\n{traceback.format_exc()}\n")
         return None
 
 

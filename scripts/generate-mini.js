@@ -17,12 +17,12 @@
  *   games/mini-crossword/puzzles/index.js
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, unlinkSync } from 'fs';
 import { resolve } from 'path';
 
 const cluesFile = process.argv[2];
-const TARGET = parseInt(process.argv[3]) || 3000;
-const PACK_SIZE = parseInt(process.argv[4]) || 100;
+const TARGET = parseInt(process.argv[3], 10) || 3000;
+const PACK_SIZE = parseInt(process.argv[4], 10) || 100;
 
 if (!cluesFile) {
   console.error('Usage: node scripts/generate-mini.js <clues.tsv> [target-count] [pack-size]');
@@ -282,6 +282,17 @@ for (let p = 0; p < totalPacks; p++) {
   const js = `export const PUZZLES = ${JSON.stringify(pack)};\n`;
   writeFileSync(`${outDir}/pack-${padded}.js`, js);
   console.log(`  pack-${padded}.js: ${pack.length} puzzles`);
+}
+
+// Remove stale pack files from previous runs
+for (const file of readdirSync(outDir)) {
+  if (/^pack-\d+\.js$/.test(file)) {
+    const num = parseInt(file.match(/\d+/)[0], 10);
+    if (num > totalPacks) {
+      unlinkSync(`${outDir}/${file}`);
+      console.log(`  Removed stale ${file}`);
+    }
+  }
 }
 
 const indexJs = `export const TOTAL_PACKS = ${totalPacks};

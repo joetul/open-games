@@ -49,6 +49,7 @@ function renderGrid() {
       cell.dataset.row = row;
       cell.dataset.col = col;
       cell.setAttribute('role', 'gridcell');
+      cell.setAttribute('tabindex', '-1');
 
       if (puzzle[row][col] !== 0) {
         cell.textContent = puzzle[row][col];
@@ -209,6 +210,8 @@ function selectCell(row, col) {
   if (gameWon || timerPaused) return;
   selectedCell = { row, col };
   updateHighlights();
+  const cell = getCellElement(row, col);
+  if (cell) cell.focus();
 }
 
 function placeNumber(num) {
@@ -341,6 +344,7 @@ function checkWin() {
   stopTimer();
   winMessage.textContent = `You solved it in ${formatTime(timerSeconds)}!`;
   winModal.classList.add('active');
+  winNewGame.focus();
 }
 
 // ─── Timer ───────────────────────────────────────────────────────────────────
@@ -365,14 +369,17 @@ function pauseGame() {
   stopTimer();
   timerPauseBtn.closest('.timer').classList.add('paused');
   timerPauseBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>';
+  timerPauseBtn.setAttribute('aria-label', 'Resume timer');
   pauseTime.textContent = formatTime(timerSeconds);
   pauseModal.classList.add('active');
+  pauseResume.focus();
 }
 
 function resumeGame() {
   timerPaused = false;
   timerPauseBtn.closest('.timer').classList.remove('paused');
   timerPauseBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+  timerPauseBtn.setAttribute('aria-label', 'Pause timer');
   pauseModal.classList.remove('active');
   startTimer();
 }
@@ -424,6 +431,12 @@ async function newGame() {
 // ─── Keyboard Input ──────────────────────────────────────────────────────────
 
 document.addEventListener('keydown', (e) => {
+  // Escape closes any active modal
+  if (e.key === 'Escape') {
+    if (pauseModal.classList.contains('active')) { resumeGame(); return; }
+    if (winModal.classList.contains('active')) { winModal.classList.remove('active'); return; }
+  }
+
   if (gameWon || timerPaused) return;
 
   // Number keys

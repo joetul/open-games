@@ -73,10 +73,9 @@
   max-width: 100%;
 }
 
-/* Crossword grid */
+/* Crossword grid — columns set dynamically by JS based on puzzle size */
 .crossword-grid {
   display: grid;
-  grid-template-columns: repeat(15, 1fr);
   gap: 0;
   border: 2px solid var(--fg-primary);
   width: 100%;

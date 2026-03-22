@@ -276,6 +276,7 @@ function showEndModal() {
     modalResults.appendChild(row);
   });
   endModal.classList.add('active');
+  endNewGame.focus();
 }
 
 function showToast(message, duration = 1500) {
@@ -299,6 +300,12 @@ endNewGame.addEventListener('click', newGame);
 
 endModal.addEventListener('click', (e) => {
   if (e.target === endModal) endModal.classList.remove('active');
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && endModal.classList.contains('active')) {
+    endModal.classList.remove('active');
+  }
 });
 
 // ─── Init ────────────────────────────────────────────────────────────────────

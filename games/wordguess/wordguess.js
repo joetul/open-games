@@ -135,6 +135,7 @@ function submitGuess() {
         endTitle.textContent = 'Congratulations!';
         endMessage.textContent = `You got it in ${guesses.length} ${guesses.length === 1 ? 'guess' : 'guesses'}!`;
         endModal.classList.add('active');
+        endNewGame.focus();
       }, 600);
     } else if (guesses.length >= MAX_GUESSES) {
       gameOver = true;
@@ -142,6 +143,7 @@ function submitGuess() {
         endTitle.textContent = 'Game Over';
         endMessage.textContent = `The word was "${targetWord.toUpperCase()}"`;
         endModal.classList.add('active');
+        endNewGame.focus();
       }, 400);
     }
   });
@@ -199,6 +201,7 @@ function revealRow(rowIdx, guess, states, onComplete) {
         tile.classList.add(states[i]);
         tile.classList.remove('filled', 'flip-out');
         tile.classList.add('flip-in');
+        tile.setAttribute('aria-label', `${guess[i].toUpperCase()}, ${states[i]}`);
       }, FLIP_DUR);
     }, delay);
   });
@@ -267,6 +270,15 @@ function getTile(row, col) {
 
 // Physical keyboard
 document.addEventListener('keydown', (e) => {
+  // Escape closes end-game modal and starts new game
+  if (e.key === 'Escape') {
+    if (endModal.classList.contains('active')) {
+      endModal.classList.remove('active');
+      newGame();
+      return;
+    }
+  }
+
   if (e.ctrlKey || e.metaKey || e.altKey) return;
 
   if (e.key === 'Enter' || e.key === 'Backspace' || /^[a-zA-Z]$/.test(e.key)) {

@@ -108,6 +108,11 @@
   background-color: var(--bg-selection);
 }
 
+.word-tile:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 2px;
+}
+
 .word-tile:active {
   transform: scale(0.96);
 }

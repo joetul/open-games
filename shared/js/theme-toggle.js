@@ -46,13 +46,4 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btn) {
     btn.addEventListener('click', toggleTheme);
   }
-
-  // Close buttons on modals
-  document.addEventListener('click', (e) => {
-    const closeBtn = e.target.closest('.modal-close');
-    if (closeBtn) {
-      const overlay = closeBtn.closest('.modal-overlay');
-      if (overlay) overlay.classList.remove('active');
-    }
-  });
 });

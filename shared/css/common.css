@@ -43,7 +43,7 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  pointer-events: none;
+  z-index: 0;
 }
 
 /* Back arrow on game pages */
@@ -81,15 +81,21 @@ body {
   border-color: var(--accent-purple);
 }
 
+.header-actions a:focus-visible,
+.header-actions button:focus-visible {
+  border-color: var(--accent-purple);
+  outline: none;
+}
+
 .header-actions svg {
   width: 20px;
   height: 20px;
 }
 
-/* Theme toggle fill */
+/* Theme toggle icon color (icons use stroke, not fill) */
 .theme-toggle svg {
-  fill: var(--fg-primary);
-  transition: fill 0.2s;
+  stroke: var(--fg-primary);
+  transition: stroke 0.2s;
 }
 
 /* Buttons */
@@ -108,6 +114,11 @@ body {
 
 .btn:active {
   transform: scale(0.97);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 2px;
 }
 
 .btn-primary {
@@ -151,6 +162,11 @@ body {
 .game-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
+}
+
+.game-card:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 2px;
 }
 
 .game-card h2 {

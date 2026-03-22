@@ -32,7 +32,7 @@ export function saveToStorage(key, value) {
 export function loadFromStorage(key) {
   try {
     const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : null;
+    return item !== null ? JSON.parse(item) : null;
   } catch {
     return null;
   }
