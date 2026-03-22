@@ -94,10 +94,14 @@ function loadPuzzle(puzzle) {
     && Array.isArray(saved.playerGrid)
     && saved.playerGrid.length === gridSize
     && saved.playerGrid.every(row => Array.isArray(row) && row.length === gridSize);
+  const validRevealed = validSave
+    && Array.isArray(saved.revealedCells)
+    && saved.revealedCells.length === gridSize
+    && saved.revealedCells.every(row => Array.isArray(row) && row.length === gridSize);
   if (validSave) {
     playerGrid = saved.playerGrid;
-    revealedCells = saved.revealedCells || revealedCells;
-    timerSeconds = saved.timerSeconds || 0;
+    revealedCells = validRevealed ? saved.revealedCells : revealedCells;
+    timerSeconds = saved.timerSeconds ?? 0;
     if (saved.selectedCell) selectedCell = saved.selectedCell;
     if (saved.direction) direction = saved.direction;
   } else {
@@ -140,6 +144,10 @@ function renderGrid() {
   gridEl.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
 
   for (let r = 0; r < gridSize; r++) {
+    const rowDiv = document.createElement('div');
+    rowDiv.setAttribute('role', 'row');
+    rowDiv.style.display = 'contents';
+
     for (let c = 0; c < gridSize; c++) {
       const cell = document.createElement('div');
       cell.className = 'cw-cell';
@@ -175,18 +183,26 @@ function renderGrid() {
         cell.addEventListener('click', () => onCellClick(r, c));
       }
 
-      gridEl.appendChild(cell);
+      rowDiv.appendChild(cell);
     }
+
+    gridEl.appendChild(rowDiv);
   }
 }
 
+function getCell(r, c) {
+  return gridEl.children[r]?.children[c] ?? null;
+}
+
 function updateCellDisplay(r, c) {
-  const idx = r * gridSize + c;
-  const cell = gridEl.children[idx];
+  const cell = getCell(r, c);
   if (!cell || solutionGrid[r][c] === '#') return;
 
   const letterSpan = cell.querySelector('.cell-letter');
   if (letterSpan) letterSpan.textContent = playerGrid[r][c];
+
+  const letter = playerGrid[r][c] || 'empty';
+  cell.setAttribute('aria-label', `Row ${r + 1}, Column ${c + 1}, ${letter}`);
 
   cell.classList.toggle('revealed', revealedCells[r][c]);
 }
@@ -306,7 +322,7 @@ function updateActiveClue() {
 
 function updateHighlights() {
   // Clear all highlights
-  for (const cell of gridEl.children) {
+  for (const cell of gridEl.querySelectorAll('.cw-cell')) {
     cell.classList.remove('selected', 'active-word');
   }
 
@@ -320,13 +336,11 @@ function updateHighlights() {
   for (let i = 0; i < activeClue.length; i++) {
     const r = direction === 'across' ? activeClue.row : activeClue.row + i;
     const c = direction === 'across' ? activeClue.col + i : activeClue.col;
-    const idx = r * gridSize + c;
-    gridEl.children[idx]?.classList.add('active-word');
+    getCell(r, c)?.classList.add('active-word');
   }
 
   // Highlight selected cell
-  const selIdx = selectedCell.row * gridSize + selectedCell.col;
-  gridEl.children[selIdx]?.classList.add('selected');
+  getCell(selectedCell.row, selectedCell.col)?.classList.add('selected');
 
   // Highlight active clue in list
   const listEl = direction === 'across' ? acrossListEl : downListEl;
@@ -342,16 +356,6 @@ function updateHighlights() {
 // ─── Keyboard Input ─────────────────────────────────────────────────────────
 
 function handleKeydown(e) {
-  // Escape closes any active modal
-  if (e.key === 'Escape') {
-    const pauseModalEl = document.getElementById('pause-modal');
-    const winModalEl = document.getElementById('win-modal');
-    const clearModalEl = document.getElementById('clear-modal');
-    if (pauseModalEl.classList.contains('active')) { resumeGame(); return; }
-    if (winModalEl.classList.contains('active')) { winModalEl.classList.remove('active'); return; }
-    if (clearModalEl.classList.contains('active')) { clearModalEl.classList.remove('active'); return; }
-  }
-
   if (gameWon || timerPaused || !selectedCell) return;
 
   const key = e.key;
@@ -404,13 +408,12 @@ function placeLetter(letter) {
   if (solutionGrid[row][col] === '#') return;
 
   // Clear error/correct state
-  const idx = row * gridSize + col;
-  gridEl.children[idx]?.classList.remove('error', 'correct');
+  getCell(row, col)?.classList.remove('error', 'correct');
 
   playerGrid[row][col] = letter;
   revealedCells[row][col] = false;
   updateCellDisplay(row, col);
-  gridEl.children[idx]?.classList.remove('revealed');
+  getCell(row, col)?.classList.remove('revealed');
 
   saveProgress();
   moveToNextInWord();
@@ -441,8 +444,7 @@ function clearCellDisplay(r, c) {
   playerGrid[r][c] = '';
   revealedCells[r][c] = false;
   updateCellDisplay(r, c);
-  const idx = r * gridSize + c;
-  gridEl.children[idx]?.classList.remove('error', 'correct', 'revealed');
+  getCell(r, c)?.classList.remove('error', 'correct', 'revealed');
 }
 
 function deleteCurrent() {
@@ -596,15 +598,14 @@ function toggleDirection() {
 // ─── Check / Reveal / Clear ─────────────────────────────────────────────────
 
 function checkPuzzle() {
-  if (gameWon) return;
+  if (gameWon || timerPaused) return;
   let errors = 0;
   let filled = 0;
 
   for (let r = 0; r < gridSize; r++) {
     for (let c = 0; c < gridSize; c++) {
       if (solutionGrid[r][c] === '#') continue;
-      const idx = r * gridSize + c;
-      const cell = gridEl.children[idx];
+      const cell = getCell(r, c);
       if (!cell) continue;
 
       cell.classList.remove('error', 'correct');
@@ -631,7 +632,7 @@ function checkPuzzle() {
 }
 
 function revealWord() {
-  if (gameWon || !activeClue) return;
+  if (gameWon || timerPaused || !activeClue) return;
 
   for (let i = 0; i < activeClue.length; i++) {
     const r = direction === 'across' ? activeClue.row : activeClue.row + i;
@@ -641,9 +642,8 @@ function revealWord() {
     revealedCells[r][c] = true;
     updateCellDisplay(r, c);
 
-    const idx = r * gridSize + c;
-    gridEl.children[idx]?.classList.remove('error', 'correct');
-    gridEl.children[idx]?.classList.add('revealed');
+    getCell(r, c)?.classList.remove('error', 'correct');
+    getCell(r, c)?.classList.add('revealed');
   }
 
   saveProgress();
@@ -654,7 +654,7 @@ function revealWord() {
 }
 
 function clearGrid() {
-  if (gameWon) return;
+  if (gameWon || timerPaused) return;
   const modal = document.getElementById('clear-modal');
   modal.classList.add('active');
   document.getElementById('clear-cancel').focus();
@@ -669,8 +669,7 @@ function doClearGrid() {
       playerGrid[r][c] = '';
       updateCellDisplay(r, c);
 
-      const idx = r * gridSize + c;
-      gridEl.children[idx]?.classList.remove('error', 'correct');
+      getCell(r, c)?.classList.remove('error', 'correct');
     }
   }
 
@@ -797,6 +796,7 @@ function createHiddenInput() {
   hiddenInput.addEventListener('keydown', (e) => {
     // Let the main handler deal with special keys
     if (e.key === 'Backspace' || e.key === 'Delete' || e.key.startsWith('Arrow') || e.key === 'Tab' || e.key === ' ') {
+      e.stopPropagation();
       handleKeydown(e);
     }
   });
@@ -821,6 +821,7 @@ async function init() {
     timerPaused ? resumeGame() : pauseGame();
   });
   document.getElementById('resume-btn').addEventListener('click', resumeGame);
+  document.getElementById('pause-modal').addEventListener('modal-closed', resumeGame);
   document.getElementById('check-btn').addEventListener('click', checkPuzzle);
   document.getElementById('reveal-word-btn').addEventListener('click', revealWord);
   document.getElementById('clear-btn').addEventListener('click', clearGrid);

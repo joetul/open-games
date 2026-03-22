@@ -298,15 +298,7 @@ shuffleBtn.addEventListener('click', shuffleRemaining);
 deselectBtn.addEventListener('click', deselectAll);
 endNewGame.addEventListener('click', newGame);
 
-endModal.addEventListener('click', (e) => {
-  if (e.target === endModal) endModal.classList.remove('active');
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && endModal.classList.contains('active')) {
-    endModal.classList.remove('active');
-  }
-});
+// Escape, backdrop click, and X button are handled by shared modal.js
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 

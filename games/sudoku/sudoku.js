@@ -16,6 +16,7 @@ let difficulty = 'easy';
 let timerSeconds = 0;
 let timerInterval = null;
 let timerPaused = false;
+let timerActive = false;
 let gameWon = false;
 let errorsShown = true;
 let loadId = 0;
@@ -43,6 +44,10 @@ function renderGrid() {
   gridEl.innerHTML = '';
 
   for (let row = 0; row < 9; row++) {
+    const rowDiv = document.createElement('div');
+    rowDiv.setAttribute('role', 'row');
+    rowDiv.style.display = 'contents';
+
     for (let col = 0; col < 9; col++) {
       const cell = document.createElement('div');
       cell.className = 'cell';
@@ -69,8 +74,10 @@ function renderGrid() {
       }
 
       cell.addEventListener('click', () => selectCell(row, col));
-      gridEl.appendChild(cell);
+      rowDiv.appendChild(cell);
     }
+
+    gridEl.appendChild(rowDiv);
   }
 
   updateAllCells();
@@ -227,7 +234,7 @@ function placeNumber(num) {
     const prevMarks = new Set(marks);
 
     // Save undo state
-    undoStack.push({ type: 'pencil', row, col, marks: prevMarks, prevValue: board[row][col] });
+    undoStack.push({ type: 'pencil', row, col, prevMarks: prevMarks, prevValue: board[row][col] });
 
     if (marks.has(num)) {
       marks.delete(num);
@@ -254,6 +261,7 @@ function placeNumber(num) {
   }
 
   updateAllCells();
+  timerActive = true;
   startTimer();
   checkWin();
 }
@@ -381,7 +389,7 @@ function resumeGame() {
   timerPauseBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
   timerPauseBtn.setAttribute('aria-label', 'Pause timer');
   pauseModal.classList.remove('active');
-  startTimer();
+  if (timerActive) startTimer();
 }
 
 // ─── New Game ────────────────────────────────────────────────────────────────
@@ -400,6 +408,7 @@ async function newGame() {
   stopTimer();
   timerSeconds = 0;
   timerPaused = false;
+  timerActive = false;
   timerPauseBtn.closest('.timer').classList.remove('paused');
   timerPauseBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
   timerDisplay.textContent = '00:00';
@@ -430,13 +439,10 @@ async function newGame() {
 
 // ─── Keyboard Input ──────────────────────────────────────────────────────────
 
-document.addEventListener('keydown', (e) => {
-  // Escape closes any active modal
-  if (e.key === 'Escape') {
-    if (pauseModal.classList.contains('active')) { resumeGame(); return; }
-    if (winModal.classList.contains('active')) { winModal.classList.remove('active'); return; }
-  }
+// Escape, backdrop click, and X button are handled by shared modal.js
+pauseModal.addEventListener('modal-closed', resumeGame);
 
+document.addEventListener('keydown', (e) => {
   if (gameWon || timerPaused) return;
 
   // Number keys
@@ -511,13 +517,7 @@ document.querySelectorAll('.numpad-btn').forEach(btn => {
   });
 });
 
-// Close modal on overlay click
-winModal.addEventListener('click', (e) => {
-  if (e.target === winModal) winModal.classList.remove('active');
-});
-pauseModal.addEventListener('click', (e) => {
-  if (e.target === pauseModal) resumeGame();
-});
+// Escape, backdrop click, and X button are handled by shared modal.js
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 

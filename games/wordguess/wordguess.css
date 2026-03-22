@@ -57,10 +57,18 @@
   border-color: var(--accent-green);
 }
 
+[data-theme="dark"] .tile.correct {
+  color: var(--bg-primary);
+}
+
 .tile.present {
   background-color: var(--accent-orange);
   color: #fff;
   border-color: var(--accent-orange);
+}
+
+[data-theme="dark"] .tile.present {
+  color: var(--bg-primary);
 }
 
 .tile.absent {
@@ -174,9 +182,17 @@
   color: #fff;
 }
 
+[data-theme="dark"] .key.correct {
+  color: var(--bg-primary);
+}
+
 .key.present {
   background-color: var(--accent-orange);
   color: #fff;
+}
+
+[data-theme="dark"] .key.present {
+  color: var(--bg-primary);
 }
 
 .key.absent {

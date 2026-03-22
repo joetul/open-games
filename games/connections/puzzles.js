@@ -389,7 +389,7 @@ export const PUZZLES = [
       { category: "Things that can be sharp", difficulty: 0, words: ["CHEESE", "TURN", "TONGUE", "KNIFE"] },
       { category: "Words before 'house'", difficulty: 1, words: ["OPEN", "DOG", "WARE", "ROUGH"] },
       { category: "Types of press", difficulty: 2, words: ["BENCH", "FRENCH", "IRON", "FULL-COURT"] },
-      { category: "Hidden colors", difficulty: 3, words: ["AGREED", "PINKY", "BLOWN", "STORAGE"] }
+      { category: "Hidden colors", difficulty: 3, words: ["BORED", "PINKY", "PLUMBER", "TANGO"] }
     ]
   },
   {
@@ -413,7 +413,7 @@ export const PUZZLES = [
       { category: "Things that can be broken", difficulty: 0, words: ["RECORD", "SILENCE", "PROMISE", "GROUND"] },
       { category: "___ game", difficulty: 1, words: ["BALL", "BOARD", "END", "FAIR"] },
       { category: "Words after 'over'", difficulty: 2, words: ["COAT", "SIGHT", "LOAD", "FLOW"] },
-      { category: "Contain a tree", difficulty: 3, words: ["BELIEF", "HELMET", "DIPLOMA", "APPLAUSE"] }
+      { category: "Contain a tree", difficulty: 3, words: ["FIREMAN", "HELMET", "SOAKING", "FLASHY"] }
     ]
   },
   {
@@ -421,7 +421,7 @@ export const PUZZLES = [
       { category: "Things that can be tight", difficulty: 0, words: ["BUDGET", "ROPE", "SCHEDULE", "JEANS"] },
       { category: "Words before 'cap'", difficulty: 1, words: ["HUB", "ICE", "KNEE", "RED"] },
       { category: "Types of eye", difficulty: 2, words: ["BIRD", "BULL", "EVIL", "PRIVATE"] },
-      { category: "Contain a fruit", difficulty: 3, words: ["GRAPPLE", "PLUMBER", "MANDATE", "APPLIANCE"] }
+      { category: "Contain a fruit", difficulty: 3, words: ["FIGMENT", "SUBLIME", "MANDATE", "IMPEACH"] }
     ]
   },
   {
@@ -445,7 +445,7 @@ export const PUZZLES = [
       { category: "Things that can be blank", difficulty: 0, words: ["CHECK", "STARE", "CANVAS", "SLATE"] },
       { category: "Words before 'play'", difficulty: 1, words: ["FORE", "HORSE", "FAIR", "SWORD"] },
       { category: "Types of lock", difficulty: 2, words: ["GRID", "PAD", "DEAD", "HEAD"] },
-      { category: "Countries inside words", difficulty: 3, words: ["POLISHED", "PIRANHA", "CURRICULUM", "THERAPIST"] }
+      { category: "Countries inside words", difficulty: 3, words: ["PIRANHA", "SCUBA", "ROMAN", "PERUSE"] }
     ]
   },
   {
@@ -453,7 +453,7 @@ export const PUZZLES = [
       { category: "Things that can be rough", difficulty: 0, words: ["DIAMOND", "DRAFT", "SKETCH", "PATCH"] },
       { category: "Types of shot", difficulty: 1, words: ["MOON", "MUG", "CHEAP", "BUCK"] },
       { category: "Words before 'hand'", difficulty: 2, words: ["BACK", "SHORT", "SECOND", "UPPER"] },
-      { category: "Contain a drink", difficulty: 3, words: ["WINERY", "BEEHIVE", "TEAROOM", "ALEXA"] }
+      { category: "Contain a drink", difficulty: 3, words: ["WINERY", "PORTER", "TEAROOM", "ALEXA"] }
     ]
   },
   {
@@ -461,7 +461,7 @@ export const PUZZLES = [
       { category: "Things with a face", difficulty: 0, words: ["CLOCK", "CLIFF", "COIN", "BUILDING"] },
       { category: "Words meaning 'fast'", difficulty: 1, words: ["SWIFT", "RAPID", "FLEET", "HASTY"] },
       { category: "Types of net", difficulty: 2, words: ["HAIR", "SAFETY", "BASKET", "INTER"] },
-      { category: "Contain a tool", difficulty: 3, words: ["SAWYER", "HAMMERHEAD", "DRILLED", "PLYWOOD"] }
+      { category: "Contain a tool", difficulty: 3, words: ["SAWYER", "HAMMERHEAD", "DRILLED", "ADVISE"] }
     ]
   },
   {
@@ -469,7 +469,7 @@ export const PUZZLES = [
       { category: "Things with a foot", difficulty: 0, words: ["MOUNTAIN", "TABLE", "NOTE", "BIG"] },
       { category: "Words before 'ship'", difficulty: 1, words: ["FLAG", "HARD", "SCHOLAR", "FRIEND"] },
       { category: "Types of well", difficulty: 2, words: ["OIL", "INK", "STAIR", "WISHING"] },
-      { category: "Contain a sport", difficulty: 3, words: ["GOLFER", "TENNER", "BOXING", "HOCKEY"] }
+      { category: "Contain a sport", difficulty: 3, words: ["GOLFER", "SURFACE", "BOXING", "HOCKEY"] }
     ]
   },
   {
@@ -477,7 +477,7 @@ export const PUZZLES = [
       { category: "Things that can be double", difficulty: 0, words: ["DUTCH", "AGENT", "TAKE", "CROSS"] },
       { category: "Words after 'head'", difficulty: 1, words: ["BAND", "LINE", "QUARTER", "STRONG"] },
       { category: "Types of mark", difficulty: 2, words: ["BENCH", "BOOK", "TRADE", "STRETCH"] },
-      { category: "Contain a planet", difficulty: 3, words: ["MERCURY", "PROSPER", "EARTHY", "MARSHA"] }
+      { category: "Contain a planet", difficulty: 3, words: ["MERCURY", "SATURNINE", "EARTHY", "MARSHA"] }
     ]
   },
   // ─── NYT-style tricky puzzles ───────────────────────────────────────────────
@@ -534,7 +534,7 @@ export const PUZZLES = [
       { category: "Things in a courtroom", difficulty: 0, words: ["JUDGE", "JURY", "GAVEL", "WITNESS"] },
       { category: "Words after 'foot'", difficulty: 1, words: ["NOTE", "PRINT", "HOLD", "WORK"] },
       { category: "They come in packs", difficulty: 2, words: ["WOLVES", "CARDS", "LIES", "GUM"] },
-      { category: "Hidden US cities", difficulty: 3, words: ["DENIAL", "PHOENIX", "BOSTON", "PORTLAND"] }
+      { category: "Hidden US cities", difficulty: 3, words: ["DESTROY", "SUGARY", "EERIE", "BUTTER"] }
     ]
   },
   {
@@ -630,7 +630,7 @@ export const PUZZLES = [
       { category: "Things that are forked", difficulty: 0, words: ["ROAD", "TONGUE", "LIGHTNING", "RIVER"] },
       { category: "___ trap", difficulty: 1, words: ["SPEED", "MOUSE", "TOURIST", "DEATH"] },
       { category: "Words meaning 'excellent'", difficulty: 2, words: ["STELLAR", "CRACKING", "MINT", "CHOICE"] },
-      { category: "Contain a Greek letter", difficulty: 3, words: ["BETRAY", "CHAPTER", "YOGURT", "PIRATE"] }
+      { category: "Contain a Greek letter", difficulty: 3, words: ["ARCHIVE", "NUTMEG", "RHOMBUS", "PIRATE"] }
     ]
   },
   {
@@ -711,7 +711,7 @@ export const PUZZLES = [
       { category: "Things that crash", difficulty: 0, words: ["WAVE", "MARKET", "COMPUTER", "PARTY"] },
       { category: "Words after 'stone'", difficulty: 1, words: ["COLD", "WALL", "MASON", "HENGE"] },
       { category: "Things that have a crust", difficulty: 2, words: ["PIE", "BREAD", "EARTH", "SNOW"] },
-      { category: "Contain a chess piece", difficulty: 3, words: ["BROOKE", "DOCKING", "BIOPAWN", "KNIGHT"] }
+      { category: "Contain a chess piece", difficulty: 3, words: ["BROOKE", "DOCKING", "SPAWNED", "QUEENLY"] }
     ]
   },
   {
@@ -735,7 +735,7 @@ export const PUZZLES = [
       { category: "Things with a zipper", difficulty: 0, words: ["JACKET", "BAG", "TENT", "BOOT"] },
       { category: "Words after 'back'", difficulty: 1, words: ["FIRE", "BONE", "YARD", "LASH"] },
       { category: "Things that can be blind", difficulty: 2, words: ["SPOT", "DATE", "FOLD", "TASTE"] },
-      { category: "Countries hidden inside", difficulty: 3, words: ["CONTAIN", "THERAPIST", "MALICE", "CHARMING"] }
+      { category: "Countries hidden inside", difficulty: 3, words: ["ASPIRANT", "YEOMAN", "MALICE", "PERUSAL"] }
     ]
   },
   {
@@ -751,7 +751,7 @@ export const PUZZLES = [
       { category: "Things at a barbecue", difficulty: 0, words: ["GRILL", "CHARCOAL", "RIBS", "CORN"] },
       { category: "Words before 'cut'", difficulty: 1, words: ["PAPER", "SHORT", "CREW", "CROSS"] },
       { category: "Things that can be suspended", difficulty: 2, words: ["LICENSE", "BELIEF", "STUDENT", "BRIDGE"] },
-      { category: "Contain a boy's name", difficulty: 3, words: ["ADAMANT", "PROJECTOR", "TOMATO", "BENJAMIN"] }
+      { category: "Contain a boy's name", difficulty: 3, words: ["ADAMANT", "HIJACK", "TOMATO", "BENJAMIN"] }
     ]
   },
   {
@@ -791,7 +791,7 @@ export const PUZZLES = [
       { category: "Things that are flat", difficulty: 0, words: ["PANCAKE", "TIRE", "SCREEN", "EARTH"] },
       { category: "Words after 'high'", difficulty: 1, words: ["LIGHT", "JACK", "BALL", "CHAIR"] },
       { category: "Things with a pilot", difficulty: 2, words: ["PLANE", "SHOW", "FLAME", "STOVE"] },
-      { category: "Contain a season", difficulty: 3, words: ["WINTERY", "OFFSPRING", "AUTISM", "RAINFALL"] }
+      { category: "Contain a season", difficulty: 3, words: ["WINTERY", "OFFSPRING", "AUTUMNAL", "RAINFALL"] }
     ]
   },
   {

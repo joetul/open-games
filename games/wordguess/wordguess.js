@@ -270,15 +270,6 @@ function getTile(row, col) {
 
 // Physical keyboard
 document.addEventListener('keydown', (e) => {
-  // Escape closes end-game modal and starts new game
-  if (e.key === 'Escape') {
-    if (endModal.classList.contains('active')) {
-      endModal.classList.remove('active');
-      newGame();
-      return;
-    }
-  }
-
   if (e.ctrlKey || e.metaKey || e.altKey) return;
 
   if (e.key === 'Enter' || e.key === 'Backspace' || /^[a-zA-Z]$/.test(e.key)) {
@@ -297,13 +288,8 @@ keyboardEl.addEventListener('click', (e) => {
 // New game buttons
 endNewGame.addEventListener('click', newGame);
 
-// Close modal on overlay click — start a new game so user isn't stuck
-endModal.addEventListener('click', (e) => {
-  if (e.target === endModal) {
-    endModal.classList.remove('active');
-    newGame();
-  }
-});
+// Any modal close path (X button, Escape, backdrop click) starts a new game
+endModal.addEventListener('modal-closed', newGame);
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 
