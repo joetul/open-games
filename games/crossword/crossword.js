@@ -402,6 +402,10 @@ function handleKeydown(e) {
       saveProgress();
       moveToNextInWord();
       break;
+    case 'Enter':
+      e.preventDefault();
+      moveToNextClue(false);
+      break;
   }
 }
 
