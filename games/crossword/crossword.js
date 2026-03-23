@@ -398,7 +398,9 @@ function handleKeydown(e) {
       break;
     case ' ':
       e.preventDefault();
-      toggleDirection();
+      clearCellDisplay(selectedCell.row, selectedCell.col);
+      saveProgress();
+      moveToNextInWord();
       break;
   }
 }
@@ -521,9 +523,15 @@ function moveToPrevInWord() {
 }
 
 function moveSelection(dr, dc) {
-  // Switch direction to match arrow key
-  if (dc !== 0) direction = 'across';
-  if (dr !== 0) direction = 'down';
+  const newDir = dc !== 0 ? 'across' : 'down';
+
+  // If arrow axis differs from current direction, just switch direction (don't move)
+  if (newDir !== direction) {
+    direction = newDir;
+    updateActiveClue();
+    updateHighlights();
+    return;
+  }
 
   let r = selectedCell.row + dr;
   let c = selectedCell.col + dc;
@@ -582,17 +590,6 @@ function moveToNextClue(reverse) {
   }
 
   selectClue(clues[nextIdx]);
-}
-
-function toggleDirection() {
-  if (!selectedCell) return;
-  const cc = cellToClue[selectedCell.row][selectedCell.col];
-  if (cc.across && cc.down) {
-    direction = direction === 'across' ? 'down' : 'across';
-    updateActiveClue();
-    updateHighlights();
-    saveProgress();
-  }
 }
 
 // ─── Check / Reveal / Clear ─────────────────────────────────────────────────

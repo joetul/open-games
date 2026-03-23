@@ -95,7 +95,7 @@
   min-height: 0;
 }
 
-/* Black square (shouldn't appear in mini but just in case) */
+/* Black square */
 .cw-cell.black {
   background-color: var(--bg-secondary);
   cursor: default;

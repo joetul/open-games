@@ -98,22 +98,18 @@ def _urlretrieve(url: str, dest: Path):
         shutil.copyfileobj(resp, f)
 
 
-def download_data(data_dir: Path):
-    data_dir.mkdir(parents=True, exist_ok=True)
+def download_data(cache_dir: Path):
+    """Download clues and xd-puzzles to cache_dir if not already present.
 
-    for f in ("core.txt", "contemporary.txt"):
-        dest = data_dir / f
-        if not dest.exists():
-            print(f"  Downloading {f}...")
-            _urlretrieve(
-                f"https://raw.githubusercontent.com/nzfeng/crossword-dataset/main/raw/{f}",
-                dest,
-            )
+    Word lists are in the project data/ directory (checked into git).
+    Downloaded files (clues.tsv, xd-puzzles/) go to scripts/data/ (gitignored, too large for git).
+    """
+    cache_dir.mkdir(parents=True, exist_ok=True)
 
-    clues_path = data_dir / "clues.tsv"
+    clues_path = cache_dir / "clues.tsv"
     if not clues_path.exists():
         print("  Downloading xd-clues (67 MB)...")
-        zip_path = data_dir / "xd-clues.zip"
+        zip_path = cache_dir / "xd-clues.zip"
         _urlretrieve("https://xd.saul.pw/xd-clues.zip", zip_path)
         with zipfile.ZipFile(zip_path) as z:
             for member in z.namelist():
@@ -123,16 +119,17 @@ def download_data(data_dir: Path):
         zip_path.unlink()
         print(f"  clues.tsv: {clues_path.stat().st_size // 1024 // 1024} MB")
 
-    xd_dir = data_dir / "xd-puzzles"
+    xd_dir = cache_dir / "xd-puzzles"
     if not xd_dir.exists():
         print("  Downloading xd-puzzles (12 MB)...")
-        zip_path = data_dir / "xd-puzzles.zip"
+        zip_path = cache_dir / "xd-puzzles.zip"
         _urlretrieve("https://xd.saul.pw/xd-puzzles.zip", zip_path)
         with zipfile.ZipFile(zip_path) as z:
             z.extractall(xd_dir)
         zip_path.unlink()
 
     print("Data ready.")
+    return clues_path
 
 
 # ── Load Words + Clues + Build Indices ────────────────────────────────
@@ -147,16 +144,21 @@ def load_words(filepath: Path) -> set[str]:
     return words
 
 
-def build_data(data_dir: Path):
-    """Load words, clues, and build bitset indices into module globals."""
+def build_data(word_dir: Path, clues_tsv: Path):
+    """Load words, clues, and build bitset indices into module globals.
+
+    Args:
+        word_dir: Directory containing crossword-core.txt and crossword-contemporary.txt
+        clues_tsv: Path to the xd-clues clues.tsv file
+    """
     global words_by_len, clue_map, letter_bits, all_bits
 
-    word_set = load_words(data_dir / "core.txt") | load_words(data_dir / "contemporary.txt")
+    word_set = load_words(word_dir / "crossword-core.txt") | load_words(word_dir / "crossword-contemporary.txt")
     print(f"MsFit words: {len(word_set)}")
 
     # Load clues
     _clue_map = defaultdict(list)
-    with open(data_dir / "clues.tsv") as f:
+    with open(clues_tsv) as f:
         next(f)  # skip header
         for line in f:
             parts = line.rstrip("\n").split("\t")
@@ -525,7 +527,7 @@ def _sample_bits(bs: int, limit: int) -> list[int]:
 _worker_max_backtracks = MAX_BACKTRACKS
 
 
-def _worker_init(data_dir_str: str, max_bt: int):
+def _worker_init(word_dir_str: str, clues_tsv_str: str, max_bt: int):
     """Initialize worker: load all data into process globals, ignore SIGINT."""
     global _worker_max_backtracks
     _worker_max_backtracks = max_bt
@@ -534,7 +536,7 @@ def _worker_init(data_dir_str: str, max_bt: int):
     # Suppress per-worker print noise
     import io
     sys.stdout = io.StringIO()
-    build_data(Path(data_dir_str))
+    build_data(Path(word_dir_str), Path(clues_tsv_str))
     sys.stdout = sys.__stdout__
 
 
@@ -620,7 +622,8 @@ def main():
 
     script_dir = Path(__file__).resolve().parent
     project_dir = script_dir.parent
-    data_dir = script_dir / "data"
+    word_dir = project_dir / "data"               # word lists (checked into git)
+    cache_dir = script_dir / "data"               # downloaded data (gitignored, too large)
     out_dir = project_dir / "games" / "crossword" / "puzzles"
     checkpoint_path = script_dir / CHECKPOINT_FILE
 
@@ -628,17 +631,17 @@ def main():
     print(f"Crossword Generator — target: {target}, workers: {n_workers}")
     print("=" * 60)
 
-    # Download data
+    # Download clues and xd-puzzles (word lists already in data/)
     print("\nChecking data files...")
-    download_data(data_dir)
+    clues_tsv = download_data(cache_dir)
 
     # Build indices in main process (needed for pattern loading)
     print("\nBuilding word/clue indices...")
-    build_data(data_dir)
+    build_data(word_dir, clues_tsv)
 
     # Load patterns
     print("\nLoading grid patterns...")
-    patterns = load_patterns(data_dir)
+    patterns = load_patterns(cache_dir)
 
     if not patterns:
         print("ERROR: No valid grid patterns found!")
@@ -678,7 +681,7 @@ def main():
     # Each pass shuffles patterns for different random fills.
     # Pool is created once to avoid re-loading data in workers each pass.
     try:
-        with mp.Pool(n_workers, initializer=_worker_init, initargs=(str(data_dir), max_bt)) as pool:
+        with mp.Pool(n_workers, initializer=_worker_init, initargs=(str(word_dir), str(clues_tsv), max_bt)) as pool:
             while len(puzzles) < target and not shutdown:
                 pass_num += 1
                 work_patterns = list(patterns)
