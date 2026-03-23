@@ -526,12 +526,16 @@ function moveToPrevInWord() {
 function moveSelection(dr, dc) {
   const newDir = dc !== 0 ? 'across' : 'down';
 
-  // If arrow axis differs from current direction, just switch direction (don't move)
+  // If arrow axis differs from current direction, switch direction only if
+  // the current cell actually has a clue in that direction; otherwise just move
   if (newDir !== direction) {
-    direction = newDir;
-    updateActiveClue();
-    updateHighlights();
-    return;
+    const cc = cellToClue[selectedCell.row]?.[selectedCell.col];
+    if (cc && cc[newDir]) {
+      direction = newDir;
+      updateActiveClue();
+      updateHighlights();
+      return;
+    }
   }
 
   let r = selectedCell.row + dr;
