@@ -53,24 +53,6 @@
   filter: brightness(1.15);
 }
 
-/* Score addition indicator */
-.score-addition {
-  position: absolute;
-  top: 0;
-  right: 50%;
-  transform: translateX(50%);
-  font-size: 0.85rem;
-  font-weight: 800;
-  color: var(--accent-green);
-  pointer-events: none;
-  animation: score-float 0.8s ease-out forwards;
-}
-
-@keyframes score-float {
-  0% { opacity: 1; transform: translateX(50%) translateY(0); }
-  100% { opacity: 0; transform: translateX(50%) translateY(-1.5rem); }
-}
-
 /* ─── Grid ────────────────────────────────────────────────────────────────── */
 
 .grid-container {
@@ -239,10 +221,6 @@
     animation: none;
   }
 
-  .score-addition {
-    animation: none;
-    display: none;
-  }
 }
 
 /* ─── Responsive ──────────────────────────────────────────────────────────── */

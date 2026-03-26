@@ -215,8 +215,6 @@ function move(direction) {
       }
     });
 
-    // Show score gain
-    if (scoreGain > 0) showScoreAddition(scoreGain);
     renderScore();
 
     // Add new tile
@@ -278,15 +276,6 @@ function renderScore() {
     saveToStorage('2048-best', bestScore);
   }
   bestScoreEl.textContent = bestScore;
-}
-
-function showScoreAddition(amount) {
-  const el = document.createElement('span');
-  el.className = 'score-addition';
-  el.textContent = '+' + amount;
-  const scoreBox = scoreEl.parentElement;
-  scoreBox.appendChild(el);
-  el.addEventListener('animationend', () => el.remove());
 }
 
 // ─── Modals ──────────────────────────────────────────────────────────────────
