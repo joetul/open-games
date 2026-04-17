@@ -1,11 +1,18 @@
 /* ─── Layout ──────────────────────────────────────────────────────────────── */
 
+body {
+  overflow: hidden;
+}
+
 .game-area {
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem 1rem;
-  gap: 1.5rem;
+  justify-content: center;
+  padding: 1rem;
+  gap: 1rem;
 }
 
 /* ─── Score Bar ───────────────────────────────────────────────────────────── */
@@ -14,7 +21,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  width: min(500px, calc(100vw - 2rem));
+  width: min(500px, calc(100vw - 2rem), calc(100dvh - 220px));
 }
 
 .score-box {
@@ -58,7 +65,7 @@
 .grid-container {
   --gap: 10px;
   --grid-padding: 10px;
-  width: min(500px, calc(100vw - 2rem));
+  width: min(500px, calc(100vw - 2rem), calc(100dvh - 220px));
   aspect-ratio: 1;
   background: var(--bg-secondary);
   border-radius: var(--radius-lg);
